@@ -21,4 +21,4 @@ Open `PROMPT.md`, fill the [brackets], and paste it at the start of a chat.
 - `LICENSE`: MIT
 
 ## Tested
-Written and checked with simulated chats. Upload into Claude Settings and other tools: not yet tested.
+Checked with simulated chats only (one AI playing both sides): 7 rounds, 3 different owners in a row passed on the final text; one owner replied in Mandarin. The one-paste prompt was tested alone in 3 runs and is weaker than the skill. Not tested: upload into Claude Settings, or any other tool.
