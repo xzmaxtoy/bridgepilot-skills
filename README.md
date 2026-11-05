@@ -7,10 +7,12 @@ It works with chat alone. It needs no other tools.
 It goes with the BridgePilot post "How to get AI advice that fits your business: 4 steps".
 
 ## Install in Claude
-1. Download `ask-before-you-advise.zip`. Do not unzip it.
-2. In Claude, open Settings > Capabilities > Skills.
-3. Upload the zip.
-4. Start a chat with a question like "Should I start a newsletter?" The skill starts when you ask for advice on a decision.
+1. In a terminal, run `claude plugin marketplace add xzmaxtoy/bridgepilot-skills`.
+2. Then run `claude plugin install ask-before-you-advise@bridgepilot-skills`.
+3. Start a chat with a question like "Should I start a newsletter?" The skill starts when you ask for advice on a decision.
+
+## Update
+Run `claude plugin marketplace update bridgepilot-skills`. The skill is installed from this repo, so you always get the current version.
 
 ## Other tools (no skills)
 Open `ask-before-you-advise/PROMPT.md`, fill the [brackets], and paste it at the start of a chat.
@@ -18,6 +20,7 @@ Open `ask-before-you-advise/PROMPT.md`, fill the [brackets], and paste it at the
 ## Files
 - `ask-before-you-advise/SKILL.md`: the skill
 - `ask-before-you-advise/PROMPT.md`: one-paste version
+- `.claude-plugin/marketplace.json`: makes this repo installable as a Claude Code marketplace
 - `tests/`: the simulated chats, plus `evals.json`, the seven cases used to score it
 - `LICENSE`: MIT
 
