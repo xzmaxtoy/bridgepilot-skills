@@ -13,11 +13,12 @@ It goes with the BridgePilot post "How to get AI advice that fits your business:
 4. Start a chat with a question like "Should I start a newsletter?" The skill starts when you ask for advice on a decision.
 
 ## Other tools (no skills)
-Open `PROMPT.md`, fill the [brackets], and paste it at the start of a chat.
+Open `ask-before-you-advise/PROMPT.md`, fill the [brackets], and paste it at the start of a chat.
 
 ## Files
-- `skill/ask-before-you-advise/SKILL.md`: the skill
-- `PROMPT.md`: one-paste version
+- `ask-before-you-advise/SKILL.md`: the skill
+- `ask-before-you-advise/PROMPT.md`: one-paste version
+- `tests/`: the simulated chats used to test it
 - `LICENSE`: MIT
 
 ## Tested
