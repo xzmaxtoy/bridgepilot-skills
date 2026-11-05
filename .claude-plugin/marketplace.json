@@ -1,0 +1,21 @@
+{
+  "name": "bridgepilot-skills",
+  "owner": {
+    "name": "BridgePilot"
+  },
+  "metadata": {
+    "description": "BridgePilot skills for small-business owners",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "ask-before-you-advise",
+      "description": "Interview a small-business owner before giving advice: asks for the company document and brand document, asks one question at a time, and advises only after the owner confirms the picture.",
+      "source": "./ask-before-you-advise",
+      "strict": false,
+      "skills": [
+        "./ask-before-you-advise"
+      ]
+    }
+  ]
+}
