@@ -1,0 +1,4 @@
+# Persona E: freelance wedding photographer (NO documents)
+Owner: Tom, freelance photographer, 4 years, works alone, shoots weddings and a few family sessions. Wants help with: "I'm thinking of adding video to what I offer. Good idea?"
+Behaviour: medium answers, sometimes self-doubting ("I'm not sure I'm good enough at it"), once gives a number-heavy answer (says he shot "about 20 weddings last year" and wants to "make maybe more"), once contradicts himself (says he wants fewer weddings, then says he wants more bookings), once asks "what do other photographers charge for video?". Has nothing written down; says "it's all in my head".
+Facts if asked sensibly: works weekends mostly and edits at night; owns a camera that can film but no video editing skills yet; no assistant; books mainly through referrals from a venue; would not hire an editor yet.
