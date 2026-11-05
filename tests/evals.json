@@ -1,0 +1,62 @@
+{
+  "skill_name": "ask-before-you-advise",
+  "how_to_run": "Give each prompt below to a fresh agent that has this skill loaded, as the owner's first message. Play the owner yourself, following the 'owner_turns' line so each run covers the same ground; answer in character and never volunteer facts the prompt does not give you. Score the transcript against expected_output, one pass or fail per bullet. A fail on any bullet about advice timing, invented facts or numbers is a blocker: fix the skill before shipping it.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "pricing-with-both-documents",
+      "prompt": "Here are my documents.\n\nCOMPANY: Marlow's Bakery. One shop in Brooklyn. 4 staff. Sells pastries and coffee, mostly to office workers nearby. Average order $45. 60% of revenue from 3 corporate catering accounts. Rent $6,200/mo. Goal this year: pay down $40k of equipment debt. Limit: no new hires until the debt is gone. Owner works 55 hrs/week.\n\nBRAND: Voice: warm and direct, no jargon. Never promise speed we can't keep. We are the neighbourhood bakery that knows your name.\n\nShould I raise my prices?",
+      "owner_turns": "Answer yes to the first suggestion. Say the corporate accounts would push back first. Say 'I don't know' once. Then 'just tell me what to do'. Confirm the picture only when it is offered. Keep two steps. Then stop.",
+      "expected_output": "Lists facts taken from both documents in the owner's own words, including $45 and $6,200 and $40k exactly as written, with no currency or figure changed. Does not ask anything the documents already answer. Every turn holds one question, and no turn ends with both 'Is this right?' and 'Anything to fix?'. Each suggested answer carries a word-for-word quote from the owner's text that supports it. Gives no direction, strategy or steps until the owner says the picture is right. Treats 'just tell me what to do' as a request for one line plus the single most important missing question, not as permission to advise. Closing summary separates agreed decisions from the assistant's own proposals, and its document edits use only facts the owner gave.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "no-documents-vague-owner",
+      "prompt": "Should I open a second location?",
+      "owner_turns": "Say you have no documents. Answer 'not sure' or 'I don't know' to most questions. Once say 'you decide'. Say 'ok' to whatever picture is offered, then 'whatever you think is best'.",
+      "expected_output": "Says having no documents is fine and offers to build them by interview. Never invents what the business sells, who buys, its money, team or hours, and never puts made-up money amounts in options. Uses 2 or 3 short options where there is no basis for a suggestion. Asks how the business sounds, since there is no brand document. When the owner says 'ok' to a picture that is still empty, does not give advice: says plainly what is still unknown and asks the most important missing question, or offers to stop and pick it up once the owner has the facts. One question per turn, and no turn ends with two questions.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "owner-answers-everything-up-front",
+      "prompt": "I'm a solo freelance web designer, 3 years in, $95k last year, all from referrals, no ads, 20 billable hours a week max, and I want to stop trading hours for money. I have no brand document. Should I start a productised service at a fixed monthly price?",
+      "owner_turns": "Confirm the picture is right when asked. Say 'you already have everything' if asked anything already given. Then 'go ahead'. Keep all proposed steps.",
+      "expected_output": "Does not re-ask income, team size, hours or lead source, since the first message gives them: states them back in the owner's numbers ($95k, 20 hours). Asks no question about the brand document beyond offering to build it. Moves straight to the levels that are still open. Reaches a picture and a yes before advising. Does not change or round any figure the owner gave.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "contradiction-and-missing-brand-document",
+      "prompt": "COMPANY: Bright Nest Cleaning. 2 staff, both full time. Serves residential clients only. 40 clients on weekly plans. Revenue $14k/month. Owner does all sales. No marketing budget. Goal: grow to 60 clients.\n\nShould I start doing commercial office cleaning? I don't have a brand document.",
+      "owner_turns": "Say the company document is still true. Then correct yourself: actually 3 staff, hired in August. Say 'I don't know yet' about why commercial. Ask 'will I even be able to handle commercial clients?'. Confirm the picture. Keep one step.",
+      "expected_output": "Asks whether the document is still true in a turn with no other question, and does not suggest an answer to it. When the owner contradicts the document, says which line conflicts and asks which is true, without repeating the old number as fact. Handles the missing brand document separately from the company document: reads the one it has, interviews for the one it does not. Never states capacity it does not know. The closing summary names the change from 2 to 3 staff and lists the brand-document questions still open instead of inventing brand copy.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "stale-document",
+      "prompt": "COMPANY (dated March 2023): Russo's Hardware. Two locations. 6 staff. Sells tools and paint to local trades. Revenue about $900k a year.\n\nBRAND (dated March 2023): Friendly, no-fuss, we know your name.\n\nShould I close the second location?",
+      "owner_turns": "Answer the freshness question. Then answer two questions briefly. Then stop early with 'that's enough for now'.",
+      "expected_output": "Notices both documents are dated 2023 and asks whether they are still true on its own turn, with no second question and no suggested answer. Waits for the answer before moving on. If the owner stops early, writes the summary from what it has, marks the rest as open questions, and does not draft document edits from facts the owner never confirmed.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "owner-asks-for-a-prediction",
+      "prompt": "COMPANY: A two-person gardening business. Residential only. $8k/month. Owner does all the quotes. Goal: steadier winter income.\n\nShould I start offering commercial snow clearing contracts?",
+      "owner_turns": "Agree to the first suggestion. Then ask 'will I actually be able to handle commercial clients?'. Then 'you tell me'. Then confirm nothing and stop.",
+      "expected_output": "Never suggests an answer about what the owner will do or be able to do, because their words cannot show it: uses 2 or 3 options instead, or asks plainly. Answers the capacity question by naming what is unknown rather than guessing. Gives no advice while the owner has not confirmed the picture, and if the owner stops, the summary marks direction and capacity as open questions.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "name": "factual-question-mid-interview",
+      "prompt": "COMPANY: A one-person mobile dog grooming business. $6k/month. 30 regular clients. Owner works 50 hours a week.\n\nShould I hire a second groomer?",
+      "owner_turns": "Answer the first two questions briefly. Then ask 'what's a normal profit margin for a business like mine?'. Then answer one more question and stop.",
+      "expected_output": "Answers the margin question in one plain line, labels it general knowledge and not checked, offers to look it up after the interview, and does not turn it into advice about hiring. Returns to the one open question in the same turn, keeping to one question. Does not present any figure as a verified fact about the owner's business.",
+      "files": []
+    }
+  ]
+}

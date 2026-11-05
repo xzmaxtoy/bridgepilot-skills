@@ -18,8 +18,12 @@ Open `ask-before-you-advise/PROMPT.md`, fill the [brackets], and paste it at the
 ## Files
 - `ask-before-you-advise/SKILL.md`: the skill
 - `ask-before-you-advise/PROMPT.md`: one-paste version
-- `tests/`: the simulated chats used to test it
+- `tests/`: the simulated chats, plus `evals.json`, the seven cases used to score it
 - `LICENSE`: MIT
 
 ## Tested
-Checked with simulated chats only (one AI playing both sides): 7 rounds, 3 different owners in a row passed on the final text; one owner replied in Mandarin. The one-paste prompt was tested alone in 3 runs and is weaker than the skill. Not tested: upload into Claude Settings, or any other tool.
+Checked with simulated chats only (one AI playing both sides): 7 rounds, 3 different owners in a row passed on the final text; one owner replied in Mandarin. The one-paste prompt was tested alone in 3 runs and is weaker than the skill.
+
+Re-tested 5 Nov 2026, after publishing, by reading four owner conversations against the skill's own rules. It found real faults: the confirmation step asked two questions while another rule forbids a second question; a bare "ok" and "just tell me what to do" were each read as a yes; one run changed $45 to £45; one carried its own suggested answer forward as the owner's. All four are fixed, and the two scenarios that failed now pass on a re-run.
+
+Not tested: upload into Claude Settings, or any other tool.
