@@ -65,5 +65,5 @@ What would a homeowner type into XHS search to find your service? Fill `keyword_
 
 ## Finish
 1. Read back the confirmed business essentials, provisional creative defaults, deferred fields, and separate automation choices in one compact summary. Get the client's confirmation.
-2. Set `status.interview_complete: true` and run `python3 scripts/profile-check.py <profile>`. Fix real validation problems; do not fabricate optional values. If validation fails, restore `interview_complete: false` until corrected.
+2. Set `status.interview_complete: true` and run `python3 scripts/profile-check.py <profile>`. Fix real validation problems; do not fabricate optional values. If validation fails, restore `interview_complete: false` until corrected. Preserve the missing-field list, but continue any requested flow whose own prerequisites are satisfied; full interview completion is not a gate for plans, drafts or saved-file analytics.
 3. Continue system preparation and the first video. Update the profile as the client reviews the storyboard and preview instead of restarting the interview.

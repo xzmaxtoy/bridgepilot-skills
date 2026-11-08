@@ -1,6 +1,6 @@
 # Insights: export first, then a visual weekly review
 
-Use read-only BrowserSkill in the client's explicitly selected browser. Follow the installed browser-skill's cooperation, profile binding, download and cleanup instructions. Never change posts or send messages as part of analytics. First-run analytics may proceed as an explicitly authorized read-only test while publishing setup remains incomplete; keep automatic actions off.
+For supplied exports/reports, work offline with the available analysis tools; no browser or completed setup is required. For fresh account collection, use read-only BrowserSkill in the client's explicitly selected browser and follow its cooperation, profile binding, download and cleanup instructions. Never change posts or send messages as part of analytics. Keep automatic actions off during tests.
 
 ## Collect once, analyze locally
 

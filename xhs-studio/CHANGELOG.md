@@ -2,6 +2,11 @@
 
 Semantic versions; the version is in `SKILL.md` frontmatter metadata. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
 
+## 0.5.0 - 2026-11-08
+- Replace the universal setup gate with inferred Setup, Plan, Create, Publish, Inbox and Insights flows and action-specific readiness.
+- Make workspace/profile/tools/dry-run setup progressive modules. Preserve partial answers and refine creative preferences through storyline/storyboard/preview; check only relevant dependencies and continue independent work when one action is blocked.
+- Treat legacy completion flags and full-profile validation as milestone evidence, not global work gates. Keep sourced claims, footage permissions, final approval, correct-account checks, guards and publishing/sending authorization intact. No profile migration or new automatic actions.
+
 ## 0.4.2 - 2026-11-08
 - Save complete report bundles in the client workspace (or explicit chosen destination), verify portable links, and maintain separate account-scoped live/test report pointers. Host output folders are staging copies.
 - Make repeat video planning read the matching-account report and prior experiment first, then link evidence, targeting, hypothesis and outcome windows into the next job brief. Keep account/test boundaries and normal creative/publishing approvals.

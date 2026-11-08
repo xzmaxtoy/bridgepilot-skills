@@ -2,25 +2,42 @@
 name: xhs-studio
 description: "Create and review Xiaohongshu (RedNote) posts from real business footage, prepare the publish form, and manage approved inbox workflows using the client's Chrome. Use for XHS account setup, post creation, comments, DMs, and insights. Video editing requires the separate HyperFrames skill."
 metadata:
-  version: "0.4.2"
+  version: "0.5.0"
 ---
 
 # xhs-studio
 
 One client, one Xiaohongshu (XHS) account, one loop: **footage in -> cut -> Chinese text and cover -> caption draft -> client approves -> publish form -> comments and DMs -> numbers -> next post.** It runs in the client's chosen agent app with authorized access to their computer and browser; no particular app or subscription is required by the workflow. Check actual host capabilities before claiming compatibility. Real footage only.
 
-`SKILL_DIR` = the folder that holds this SKILL.md. `XHS_HOME` = the client workspace: **a folder the client chose on the first run** (there is no fixed folder). It holds the profile, logs, jobs and footage. The path is saved once by `scripts/workspace.sh set` in `~/.config/xhs-studio/workspace`, and every script reads it from there; you set nothing in later commands. A script that finds no saved path stops with exit 12 and "NO WORKSPACE": run `SETUP.md` stage A0. The profile lives in the workspace, so a skill update never overwrites it. All scripts are called as `bash "$SKILL_DIR/scripts/<name>"` or `python3 "$SKILL_DIR/scripts/<name>"`.
+`SKILL_DIR` = the folder that holds this SKILL.md. `XHS_HOME` = the client workspace: **a folder the client chose on the first run** (there is no fixed folder). It holds the profile, logs, jobs and footage. The path is saved once by `scripts/workspace.sh set` in `~/.config/xhs-studio/workspace`, and every script reads it from there; you set nothing in later commands. A workspace-dependent script stops with exit 12 and "NO WORKSPACE" when none is chosen: complete only `SETUP.md` A0 before using that helper. Supplied-file analysis and provisional planning can proceed without invoking it. The profile lives in the workspace, so a skill update never overwrites it. All scripts are called as `bash "$SKILL_DIR/scripts/<name>"` or `python3 "$SKILL_DIR/scripts/<name>"`.
 
 "The owner" in the rules below means the client: the person who owns the XHS account.
 
-## Step 0, every run
-1. Run `bash "$SKILL_DIR/scripts/workspace.sh" status`. "not set" = stop and run `SETUP.md` stage A0. Then read `$XHS_HOME/profile.json` (get the path with `workspace.sh get`). If the profile is missing, or `status.interview_complete`, `system_prep_complete` or `dry_run_complete` is false: stop and run `SETUP.md` (the guided first run). An explicitly requested read-only analytics or inbox simulation may instead follow `references/insights.md` or `references/inbox-triage.md` with automatic actions kept off; it does not complete publishing setup. Otherwise do nothing else first.
-2. Run `bash "$SKILL_DIR/scripts/kill-switch.sh" status`. Report it in one line.
-3. Read the newest files in `$XHS_HOME/log/` (what was done last time, what is waiting).
-4. Run `bash "$SKILL_DIR/scripts/doctor.sh"` once per day, or whenever something fails.
+## Route the request; readiness belongs to the action
+Infer the flow from the request; do not make the client choose a mode. Setup is one available flow, not a prerequisite interview for every other flow. A request may move between flows; check the next action's essentials at that boundary.
+
+| Flow | Minimum needed now | Read when relevant |
+|---|---|---|
+| **Setup** | Current goal and access to the chosen host; choose a workspace when saving client state | `SETUP.md` — only the needed sections |
+| **Plan** | Relevant supplied context/report and known account or explicitly provisional identity; no browser or editing tools needed | `references/production-cycle.md`, `references/topic-ideation.md` |
+| **Create** | For an edit: actual usable footage, applicable permissions, editing tools and enough creative decisions for the next preview. For final render: approved plan/copy/cut and final checks | HyperFrames plus `references/footage-cutdown.md`, `references/review-gate.md` |
+| **Publish** | Correct account, approved exact final assets/copy, privacy/content review and working browser; sending/publishing authorization remains separate | `references/publish-route.md`, guard and hard-stop rules |
+| **Inbox** | Supplied message context for offline drafts; account/browser readiness only for live reads. Sending adds last-sender check, exact-text/pattern authorization and guard | `references/inbox-triage.md`, `references/send-mechanics.md` |
+| **Insights** | Supplied exports/report for offline analysis; account/browser readiness only for new collection | `references/insights.md`, `references/weekly-report.md` |
+
+Before work, read the matching profile and relevant recent job/report/scan state **if available and authorized**. Do not load unrelated client logs or start a browser merely to draft a plan. If a supplied report and saved profile differ, keep them separate; use an explicitly selected test report only for that test. Unknown facts remain labelled, not borrowed from another account.
+
+`interview_complete`, `system_prep_complete` and `dry_run_complete` record completed milestones, not global permission or readiness gates. Their absence/false value does not block a supported plan, preview, inbox draft or offline report. Do not fabricate values or set flags just to satisfy a validator. `profile-check.py` checks full profile completion; its incomplete result identifies follow-up work, not a universal stop. Malformed data must be repaired or isolated before a helper that depends on it.
+
+Run only prerequisite checks relevant to the selected action. Full `doctor.sh` is for a requested environment audit or broad setup; a missing video dependency cannot block inbox work or spreadsheet analysis. Before live browser work check its actual host/BrowserSkill connection, required instance and account; before editing check the editing route. Before any automatic action run the existing guard; inspect kill-switch/warning state only against the correct authorized workspace. Completing setup never enables a switch or approves new content.
+
+If an essential is missing, stop **only that dependent action**, state the gap and continue useful independent work. Without footage, prepare a conditional brief/filming request, not an invented footage-backed storyboard. Without browser access, analyze saved data. Without approval, keep drafts unapproved. A login/platform warning stops affected live actions; it never authorizes bypassing the warning.
+
+### Progressive setup while doing the work
+Prefill from supplied websites/documents and confirmed choices. Ask only a small group of unresolved questions needed for the next useful result, with recommendations. Save answers and deferred items in the chosen workspace/profile or job brief; preserve existing values. Label recommendations/provisional choices, and refine duration, tone, captions, pacing, music and branding during the first storyline/storyboard/preview. Never delay a useful draft for an optional sample post, complete interview, music sign-in not yet needed, future publishing dry run or unrelated tool installation. Explicit customer permissions, sourced claims, creative approvals and sending/publishing authorization remain required at the action that needs them.
 
 ## The three switches (client's choice, all OFF by default)
-Present as three separately labelled choices in the first-run interview, each with the plain note that **XHS may limit accounts that use automation**. Stored in `profile.json` > `automation`.
+Present as three separately labelled choices when discussing automation (do not require this discussion for an offline draft), each with the plain note that **XHS may limit accounts that use automation**. Stored in `profile.json` > `automation`.
 
 | Switch | OFF (default) | ON |
 |---|---|---|
@@ -43,7 +60,7 @@ The current agent drafts the Chinese itself. No outside writing service, no key.
 - More: `references/copy-drafting.md`.
 
 ## Daily loop
-1. Doctor check if due; kill-switch status.
+1. Select the requested flow; check only its dependencies and correct-account state. Inspect kill-switch/warning status before live/action work; no full editing-environment audit for an inbox scan.
 2. Read the inbox, read-only (`references/inbox-triage.md`): at most 3 page loads. Diff against yesterday.
 3. Draft replies in the client's voice. Show one batch to the client. If the matching switch is ON and the reply matches an approved pattern, send it (`references/send-mechanics.md`). Otherwise the client sends.
 4. About 2 h after each post: sweep its comments.
@@ -56,7 +73,7 @@ Only when requested: read `references/scheduling.md`, discover the current host'
 ## Make a post (the 11 steps)
 For repeat production, first read the latest matching-account report and prior experiment, and write the report-to-video handoff (`references/production-cycle.md`). Save final deliverables in the client workspace; host temporary/output folders are staging copies unless the client chose them.
 1. **Footage in.** The client drops phone video and stills for ONE job in a folder. If it came as a zip, unpack it with `python3 "$SKILL_DIR/scripts/unpack-footage.py" FILE.zip FOLDER` (the system `unzip` can silently skip big clips) and require "all files present and complete". List the files. Confirm in a small intake group, reusing known facts: what was the job, which city (city only), did the customer agree to be shown (`customer_permission`), **which clip shows the FINISHED RESULT** (required for a result-led story; never label preparation footage as an after shot), and which clip, if any, should open the post (hook) and which shows the before state. No yes on permission = do not use that footage. Phone photos: `bash "$SKILL_DIR/scripts/prep-stills.sh" IN OUT` converts HEIC to JPG and makes a contact sheet (`references/footage-cutdown.md`).
-2. **Fact lock.** Table of claims the post may make (service, before/after, timeframe). A claim with no source in the profile is cut. No licence, insurance, years-in-business or price claim unless the client stated it and gave the source. The client confirms the table.
+2. **Fact lock.** Table of claims the post may make (service, before/after, timeframe). Use the matching profile or job's sourced fact lock; a claim with no source is cut. No licence, insurance, years-in-business or price claim unless the client stated it and gave the source. The client confirms the table.
 3. **Story planning before editing.** Inspect the source footage and privacy concerns, then follow the installed HyperFrames skill's applicable storyline process. For a first narrative video over roughly 15 seconds, read its vertical/social, story, and specification guidance: offer three genuinely different, footage-supported storylines with a recommendation; let the client choose; then write `STORYLINES.md`, `SPEC.md`, and a shot-by-shot storyboard in the job folder before cutting. Honor HyperFrames' explicit no-stops/file-delivery exceptions. Do not invent a finished result when it is missing; request footage or agree a preparation-only story. Details: `references/footage-cutdown.md`.
 4. **First preview and preference refinement.** Confirm only the unresolved creative choices in a small group with recommendations. Use `profile.json` > `final_cut` as provisional defaults; create or update the job's `video-brief.json` with `approved: false` and the client's explicit choices under `requirements`, which override them. A 60-second request is supported; never silently shorten it to the recommended 15–20 seconds. Give HyperFrames the original clips, selected storyline, storyboard, `SPEC.md`, brief, brand style, 1080x1920 frame, safe zone, and output paths `<job>/final.mp4` and `cover.png`. After the plan is selected, `cutdown.py --target <requested seconds>` is an optional rough-cut helper for result-led stories; review its tiles and intervals for privacy before showing them. Do not use its fixed before/during/after structure for every storyline. Show a DRAFT preview, collect feedback, and save confirmed reusable preferences; keep one-video exceptions in the job brief. Final Chinese wording and the edit still require approval before setting `approved: true`, rendering, and running `final-check.sh`.
 5. **Music and voice.** If background music is requested, offer HyperFrames/media-use's free catalog with sign-in, a client-provided licensed track, music added inside XHS, or none. Recommend the free catalog when it fits; check the HeyGen helper, sign-in, and a successful retrieval during setup (`SETUP.md` B6a). Follow the installed media-use skill for catalog selection and mixing; keep the client's original-sound preference. Generated music is a separate credits-based choice requiring the client's choice, never a silent substitute. Record track provenance, check audio levels, and distinguish measured audio from listening review. No generated voice.
@@ -89,7 +106,7 @@ For repeat production, first read the latest matching-account report and prior e
 - XHS forbids contact IDs, links and QR codes in posts, comments and DMs. Use only the plain-text hand-off wording in the profile (`references/conversion-routes.md`).
 - Interaction: prefill from supplied websites/documents with sources, then ask small groups of related questions with recommended answers. Let the client accept a group or edit individual items. A creative-default acceptance never enables automatic actions; each switch needs a clear separate choice. Refine creative preferences through the first storyboard and preview. Save long material to files.
 
-## What is proven, and what is not (status 2026-11-08, v0.4.2)
+## What is proven, and what is not (status 2026-11-08, v0.5.0)
 | Job | Status |
 |---|---|
 | Cutdown script, final-check gate, workspace folder, copy lint, switches, kill switch, action log | Tested offline on synthetic footage |
@@ -100,17 +117,17 @@ For repeat production, first read the latest matching-account report and prior e
 | Scheduled inbox checks | Temporary one-occurrence job created and deleted in one host; execution not verified. Other agent apps require capability discovery and their own test. |
 | Weekly analytics exports and visual report | One read-only Codex/bsk test: downloaded note-list and seven-day viewing Excel files and built a responsive report. UI/export dates differed; audience geography, captions and hashtags were unavailable. Recheck each account. Bulk comments remain untested. |
 | XHS rules for accounts outside mainland China | Unverified. Treat as unknown; stop on any warning |
-The first dry run in `SETUP.md` is where these get proven for this client. Report what worked and what did not.
+Use the relevant bounded dry run in `SETUP.md` when the client reaches that flow; no full-chain dry run is required before unrelated planning or analysis. Report what worked and what did not.
 
 ## Files
 | File | Use |
 |---|---|
-| `SETUP.md` | Guided first run: workspace folder, interview, system preparation, dry run |
+| `SETUP.md` | Progressive setup modules: workspace, sourced profile, relevant dependencies and optional flow-specific dry runs |
 | `DEPENDENCIES.md` | Every dependency, check command, install step |
 | `LICENSES.md` | Licence terms for bsk and HyperFrames; what a reseller must do |
 | `CHANGELOG.md` | Versions |
 | `brand/profile.template.json` | The ONE profile file (data, not code) |
-| `references/interview.md` | The first-run questions, in order |
+| `references/interview.md` | Grouped coverage checklist; ask only next-step essentials and refine preferences during creation |
 | `references/footage-cutdown.md` | Raw footage to 9:16 rough cut, privacy check, the /hyperframes hand-off, text zones, cover |
 | `references/copy-drafting.md` | Chinese drafting rules, caption format |
 | `references/browser-runtime.md` | bsk session, one tab, selectors, low-token rules |

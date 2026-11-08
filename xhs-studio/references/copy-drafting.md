@@ -4,7 +4,7 @@ The current agent drafts the Chinese itself, for the client to rewrite. No outsi
 
 ## Always
 - Label every Chinese output **DRAFT 草稿**. Remove the label only after the client says the text is approved.
-- Read `profile.json` > `voice` first: language (Mandarin / Cantonese-flavoured), register (spoken / written), the sample post, tone notes. Match the sample's sentence length and habits.
+- Use the matching `profile.json` > `voice` when available, otherwise the client's current instructions/job brief; ask only essential wording questions and label provisional defaults. Do not require a full interview to draft copy. Voice fields: language (Mandarin / Cantonese-flavoured), register (spoken / written), the sample post, tone notes. Match the sample's sentence length and habits.
 - Simplified Chinese. Short sentences. One idea per sentence. Real words a neighbour would say. Cut filler connectors (综上所述, 总而言之) and stiff phrases (为您提供优质服务).
 - Facts only from the profile or from what the client said in this job. Never invent a number, date, name, price, duration, quote or customer story. If a fact is missing, leave a visible gap `[待补：...]` and ask.
 - Allowed claims: only items in `brand.services`, `brand.differentiators` and `red_lines.claims_sourced_by_client` that carry a real source (not UNVERIFIED).

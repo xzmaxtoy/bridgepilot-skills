@@ -2,6 +2,8 @@
 
 A production cycle is a content workflow, not permission to schedule or publish. Use the chosen client workspace as the durable source of truth; another agent app should be able to resume from files rather than needing this chat's memory.
 
+Planning is an independent flow. Use a selected report to prepare a provisional brief even if publishing setup or full-profile milestones are incomplete. Ask only essentials needed for the next decision, keep missing footage/permissions explicit, and do not invoke browser or editing checks for an offline handoff.
+
 ## Before proposing the next post
 
 1. Confirm the business/account for the new job. Read its profile, recent published-job log and latest completed report under `$XHS_HOME/reports/<account-key>/`. Prefer `latest-report.json` when present; verify the referenced report/data exist, their account matches, and their period and collection date are suitable. A missing pointer is not permission to use another account: discover that account's dated reports instead.

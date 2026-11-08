@@ -1,4 +1,4 @@
-# xhs-studio (v0.4.2)
+# xhs-studio (v0.5.0)
 
 An agent skill that runs one small business's Xiaohongshu (RedNote) account from the client's own computer: raw phone footage -> storyline and storyboard -> vertical post (edit and Chinese text by the separate /hyperframes skill) -> caption draft -> publish form -> comments, DMs and numbers. Real footage only. Chinese is always a draft the client approves. Three automation switches (auto-publish, auto-reply comments, auto-reply DMs), all OFF by default. The skill always stops before 发布 until the client approves.
 
@@ -12,7 +12,7 @@ bash scripts/install-to-codex.sh            # copies to ~/.agents/skills/xhs-stu
 ```
 3. Install/load the folder using your agent app's supported skill mechanism, then say: **use xhs-studio, run the first-time setup**.
 
-The guided first run (`SETUP.md`) does, in order: asks for one accessible workspace folder, checks the current host's capabilities, prefills a sourced profile from client material, asks unresolved questions in small groups with recommendations, installs and checks required dependencies (including the separate HyperFrames skill: `npx hyperframes skills update`), and ends with a dry run that stops before anything is published.
+Setup is progressive, not a blocking wizard. The agent infers Setup, Plan, Create, Publish, Inbox or Insights from the request and checks only that action's prerequisites. It prefills sourced facts, asks small recommended question groups, and refines preferences through the first storyboard/preview. Missing publishing setup cannot block offline plans or saved-report analysis; actual permissions and approvals still apply at the relevant action.
 
 The installer keeps its legacy filename but accepts `--dest <your-host-skill-directory>`. Confirm that directory and skill support in your actual app; do not assume every agent reads `~/.agents/skills`. A host must expose authorized local commands/files and BrowserSkill, or offer a verified equivalent interface. Compatibility with every app has not been tested.
 

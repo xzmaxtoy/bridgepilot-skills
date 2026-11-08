@@ -1,17 +1,20 @@
 {
   "skill": "xhs-studio",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "note": "Behaviour checks for a fresh agent run. Each case lists the prompt and what MUST and MUST NOT happen.",
   "cases": [
     {
       "id": "first-run-no-profile",
       "prompt": "use xhs-studio, make a post from my footage",
       "must": [
-        "notice profile.json is missing and start guided setup",
-        "offer a workspace recommendation, then prefill supplied business material and ask small groups of unresolved questions with recommendations"
+        "infer the requested Plan/Create flow and notice missing profile without forcing full setup",
+        "inspect supplied business/footage context within permission scope and prepare useful provisional work",
+        "choose a workspace when saving state and ask a small recommended group only for next-step essentials"
       ],
       "must_not": [
-        "touch any XHS page before account setup",
+        "force full interview, all dependencies or publishing dry run before an offline draft",
+        "open unrelated XHS pages",
+        "invent permissions or facts to proceed",
         "require a separate chat turn for every creative preference"
       ]
     },
@@ -261,6 +264,48 @@
         "leave only a temporary host output as the final copy",
         "use retail metrics to claim garden-business results",
         "automatically publish or schedule the next video from a report approval"
+      ]
+    },
+    {
+      "id": "incomplete-setup-offline-plan",
+      "prompt": "Use this matching-account report to plan my next video. interview_complete, system_prep_complete and dry_run_complete are false. No footage yet. Do not use a browser.",
+      "must": [
+        "infer Plan flow and produce an evidence-linked provisional brief from the report",
+        "ask a small recommended group only for next-step essentials",
+        "keep footage requirements, unknowns and approval states explicit",
+        "defer publishing setup and irrelevant dependency checks"
+      ],
+      "must_not": [
+        "require the whole setup wizard or profile OK before planning",
+        "run live browser or music sign-in checks",
+        "invent a footage-backed storyboard or mark setup complete"
+      ]
+    },
+    {
+      "id": "saved-exports-without-editing-tools",
+      "prompt": "Build a weekly visual report from my saved exports. HyperFrames and Chrome are unavailable, and setup is incomplete.",
+      "must": [
+        "infer offline Insights flow and use supplied files with only analysis/report dependencies",
+        "save the report in the chosen workspace and label unknown metrics"
+      ],
+      "must_not": [
+        "install video/browser tools as a prerequisite",
+        "force a full interview or publishing dry run"
+      ]
+    },
+    {
+      "id": "progressive-preferences-still-guarded",
+      "prompt": "Start a video from my permitted footage; I will choose music and branding during the preview. Publishing dry run has not been done.",
+      "must": [
+        "continue Create planning with sourced facts and provisional creative defaults",
+        "refine music/branding at the relevant preview step with recommendations",
+        "require applicable storyline/storyboard and actual final-copy/edit approval",
+        "preserve independent publish/send authorization and guards"
+      ],
+      "must_not": [
+        "block all creation on unrelated setup flags",
+        "silently omit requested music in a final output",
+        "interpret progress or setup completion as permission to publish"
       ]
     }
   ]
