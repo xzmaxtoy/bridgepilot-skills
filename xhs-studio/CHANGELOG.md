@@ -2,6 +2,10 @@
 
 Semantic versions; the version is in `SKILL.md` frontmatter metadata. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
 
+## 0.4.2 - 2026-11-08
+- Save complete report bundles in the client workspace (or explicit chosen destination), verify portable links, and maintain separate account-scoped live/test report pointers. Host output folders are staging copies.
+- Make repeat video planning read the matching-account report and prior experiment first, then link evidence, targeting, hypothesis and outcome windows into the next job brief. Keep account/test boundaries and normal creative/publishing approvals.
+
 ## 0.4.1 - 2026-11-08
 - Make setup and optional inbox scheduling host-neutral: discover actual local-tool, skill, scheduler and notification capabilities rather than requiring ChatGPT/Codex or a named plan. Keep legacy installer usable with a chosen destination.
 - Add a portable scheduled-check brief, preview-only/draft-only defaults, independent action authorization, persistent baselines, bounded tests and verified cancellation. Scheduled browser execution remains unverified; manual inbox read/draft was tested once.

@@ -34,7 +34,7 @@ For a local business, always include this analysis; for a nonlocal business adap
 
 ## Build the visual report
 
-Default deliverables: official source exports, normalized `results.json`, and a self-contained `weekly-report.html` in the chosen job/output folder. Save a dated copy of normalized results in `$XHS_HOME/log/`. Follow the client's language and branding; use the approved visual dashboard as a reusable starting point, not account-specific copy.
+Default durable destination: `$XHS_HOME/reports/<account-key>/<period>/` for official source exports, normalized `results.json`, and a self-contained `weekly-report.html`, unless the client explicitly chose another final destination. Host temporary/output folders are staging or review copies, not the final client library. Copy the complete portable bundle, verify links and files at the destination, and report that saved location. Maintain an account-scoped `latest-report.json` with relative report/data paths, period, collection date and mode; update it only after the bundle is verified. Keep simulations in a separate test folder and `latest-test-report.json` so they cannot silently become live production evidence. Save a dated copy of normalized results in `$XHS_HOME/log/`. Follow the client's language and branding; use the approved visual dashboard as a reusable starting point, not account-specific copy.
 
 Read [weekly-report.md](weekly-report.md) for the data contract and reusable renderer. The bundled template has headline metric cards (including unknown business outcomes), switchable daily views/impressions, per-note comparisons with scope labels, a local targeting audit, a draft next experiment, and expandable source/method notes. Keep sources linked using relative paths so the report folder is portable. No external chart/font/CDN dependencies or credentials.
 
@@ -45,3 +45,6 @@ Verify chart values against the normalized data, null vs zero, source links, des
 ## Per-post follow-up
 
 At +24 h and +72 h record views, likes, saves, comments, shares and follows when available. Recommendation-feed entry or a second distribution wave needs a source, not an assumption from views alone. Comment sweeps and the prepared first comment belong to the separately authorized inbox workflow; analytics never authorizes sending them.
+
+## Close the production loop
+The next video must read the latest matching-account report and prior experiment before selecting its new direction. Follow `production-cycle.md` to link findings and limitations into a job brief, then evaluate that hypothesis after publication. A report suggestion does not authorize creating, scheduling or publishing a new post on its own.

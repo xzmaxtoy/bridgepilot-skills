@@ -1,6 +1,6 @@
 # Weekly visual report contract
 
-Prepare normalized JSON from inspected exports and supplementary UI evidence. This is an analyst step: the renderer does not parse or guess changing XHS workbook layouts. Use the installed spreadsheet skill for workbook analysis. Generate with:
+Prepare normalized JSON from inspected exports and supplementary UI evidence. Final bundles belong in the client's chosen destination, normally `$XHS_HOME/reports/<account-key>/<period>/`; use host output/temp folders only for staging. Preserve original files and relative links, verify the destination copy, and update the matching account's latest-report pointer. Keep test and production pointers separate (see `insights.md`). This is an analyst step: the renderer does not parse or guess changing XHS workbook layouts. Use the installed spreadsheet skill for workbook analysis. Generate with:
 
 ```sh
 python3 "$SKILL_DIR/scripts/build-weekly-report.py" /path/to/results.json --out /path/to/weekly-report.html

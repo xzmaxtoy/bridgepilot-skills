@@ -1,4 +1,4 @@
-# xhs-studio (v0.4.1)
+# xhs-studio (v0.4.2)
 
 An agent skill that runs one small business's Xiaohongshu (RedNote) account from the client's own computer: raw phone footage -> storyline and storyboard -> vertical post (edit and Chinese text by the separate /hyperframes skill) -> caption draft -> publish form -> comments, DMs and numbers. Real footage only. Chinese is always a draft the client approves. Three automation switches (auto-publish, auto-reply comments, auto-reply DMs), all OFF by default. The skill always stops before 发布 until the client approves.
 
@@ -31,3 +31,6 @@ Download official Creator Center analytics before collecting missing UI context.
 
 ## Optional scheduling across agent apps
 Scheduling is provided by the host, not by xhs-studio. Use its supported scheduler only after verifying it can run the agent with the local workspace and approved browser. Start with a one-shot preview-only draft check, keep action switches independent, and verify deletion when a test is discarded. If unattended execution is unavailable, use manual checks or a clearly labelled reminder. See [scheduling](references/scheduling.md).
+
+## Durable files and repeat production
+Final reports are saved under the chosen workspace's `reports/<account-key>/<period>/`; final video jobs under `jobs/<job>/`, unless the client chooses another destination. Host output folders are staging copies. The next video reads that account's report and previous experiment and records its evidence-led hypothesis in the job brief. Test-account reports never silently guide another business. See [production cycle](references/production-cycle.md).

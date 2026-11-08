@@ -3,12 +3,14 @@
 Goal: 3-5 post ideas the client can film or already has footage for. Not generic ideas; each one ends in a concrete shot list and a comment hook.
 
 ## Inputs
-The profile (services, area, voice, differentiators), the jobs the client has coming up or has footage for, last week's winners (`insights.md`), the season.
+The profile (services, area, voice, differentiators), the jobs the client has coming up or has footage for, the latest matching-account report and prior experiment (`insights.md`, `production-cycle.md`), the season.
 
 ## Signals (use at least two)
 1. Platform: what same-topic posts with high saves look like (hook, structure, length). Optional, untested as a routine; one scan, a few posts, never the client's own.
 2. Customers: the questions in comments and DMs (`inbox-triage.md` class C and G), what they worry about.
 3. Account: topics already posted, what is a good series.
+
+Before generating ideas, reference that report in the new job brief, state what it supports and what is unknown, and choose a measurable hypothesis. Do not use another account's or an unapproved test report as production evidence.
 
 ## Method
 1. Frame the topic: object (a yard, a material, a step), action (before/after, how it is done, a mistake to avoid), emotion (satisfying, relief, surprise), benefit (save time, avoid a mistake).

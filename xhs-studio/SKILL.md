@@ -2,7 +2,7 @@
 name: xhs-studio
 description: "Create and review Xiaohongshu (RedNote) posts from real business footage, prepare the publish form, and manage approved inbox workflows using the client's Chrome. Use for XHS account setup, post creation, comments, DMs, and insights. Video editing requires the separate HyperFrames skill."
 metadata:
-  version: "0.4.1"
+  version: "0.4.2"
 ---
 
 # xhs-studio
@@ -54,6 +54,7 @@ The current agent drafts the Chinese itself. No outside writing service, no key.
 Only when requested: read `references/scheduling.md`, discover the current host's actual scheduler and local-browser access, and create a bounded draft-only test before claiming unattended checks work. Keep the workspace, browser binding, scan baseline and job metadata portable across apps. A schedule never grants sending authority. Remove and verify the matching job when the client discards it.
 
 ## Make a post (the 11 steps)
+For repeat production, first read the latest matching-account report and prior experiment, and write the report-to-video handoff (`references/production-cycle.md`). Save final deliverables in the client workspace; host temporary/output folders are staging copies unless the client chose them.
 1. **Footage in.** The client drops phone video and stills for ONE job in a folder. If it came as a zip, unpack it with `python3 "$SKILL_DIR/scripts/unpack-footage.py" FILE.zip FOLDER` (the system `unzip` can silently skip big clips) and require "all files present and complete". List the files. Confirm in a small intake group, reusing known facts: what was the job, which city (city only), did the customer agree to be shown (`customer_permission`), **which clip shows the FINISHED RESULT** (required for a result-led story; never label preparation footage as an after shot), and which clip, if any, should open the post (hook) and which shows the before state. No yes on permission = do not use that footage. Phone photos: `bash "$SKILL_DIR/scripts/prep-stills.sh" IN OUT` converts HEIC to JPG and makes a contact sheet (`references/footage-cutdown.md`).
 2. **Fact lock.** Table of claims the post may make (service, before/after, timeframe). A claim with no source in the profile is cut. No licence, insurance, years-in-business or price claim unless the client stated it and gave the source. The client confirms the table.
 3. **Story planning before editing.** Inspect the source footage and privacy concerns, then follow the installed HyperFrames skill's applicable storyline process. For a first narrative video over roughly 15 seconds, read its vertical/social, story, and specification guidance: offer three genuinely different, footage-supported storylines with a recommendation; let the client choose; then write `STORYLINES.md`, `SPEC.md`, and a shot-by-shot storyboard in the job folder before cutting. Honor HyperFrames' explicit no-stops/file-delivery exceptions. Do not invent a finished result when it is missing; request footage or agree a preparation-only story. Details: `references/footage-cutdown.md`.
@@ -65,7 +66,7 @@ Only when requested: read `references/scheduling.md`, discover the current host'
 8. **Publish.** Fill the creator-center form to "all filled, button untouched" (`references/publish-route.md`). With `auto_publish` OFF the client presses 发布. With it ON and `guard.sh publish` exit 0, the skill presses it once, after the client's approval of this exact post.
 9. **Comments and DMs.** `references/inbox-triage.md`, `references/send-mechanics.md`. Price, booking, complaint, abuse, a request for a contact: escalate to the client, never answer.
 10. **Read-back.** `references/insights.md`. Download official analytics first for weekly reviews, then build the visual report with source links, daily trends, separate cumulative post data, local traffic and keyword analysis. Missing data stays blank, never zero. Report the correct account's business outcome next to reach; do not transplant another client's `north_star`.
-11. **Next post.** Winners by saves and comments per view, not reach, feed the next brief (`references/topic-ideation.md`).
+11. **Next post.** Read the latest matching-account report and evaluate the prior experiment; carry supported findings, local targeting and a measurable next hypothesis into the next video brief (`references/production-cycle.md`, `references/topic-ideation.md`). Do not transplant a test or another business's report.
 
 ## Hard stop rules (publish)
 1. Fill the whole form, then STOP. Show the owner the form (the window is open in front with `--show`). The owner approves the exact post.
@@ -88,7 +89,7 @@ Only when requested: read `references/scheduling.md`, discover the current host'
 - XHS forbids contact IDs, links and QR codes in posts, comments and DMs. Use only the plain-text hand-off wording in the profile (`references/conversion-routes.md`).
 - Interaction: prefill from supplied websites/documents with sources, then ask small groups of related questions with recommended answers. Let the client accept a group or edit individual items. A creative-default acceptance never enables automatic actions; each switch needs a clear separate choice. Refine creative preferences through the first storyboard and preview. Save long material to files.
 
-## What is proven, and what is not (status 2026-11-08, v0.4.1)
+## What is proven, and what is not (status 2026-11-08, v0.4.2)
 | Job | Status |
 |---|---|
 | Cutdown script, final-check gate, workspace folder, copy lint, switches, kill switch, action log | Tested offline on synthetic footage |
@@ -119,6 +120,7 @@ The first dry run in `SETUP.md` is where these get proven for this client. Repor
 | `references/scheduling.md` | Host capability checks, portable inbox job, one-shot testing and verified cancellation |
 | `references/send-mechanics.md` | Sending replies, pacing, what blocks a send |
 | `references/insights.md` | Export-first weekly review, local traffic and keyword targeting |
+| `references/production-cycle.md` | Matching-account report to next-video brief, creation and outcome review |
 | `references/weekly-report.md` | Normalized data contract, offline visual report renderer and reusable HTML asset |
 | `references/review-gate.md` | Pre-publish checks |
 | `references/conversion-routes.md` | Off-platform hand-off, what may never appear |
