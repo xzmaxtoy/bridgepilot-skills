@@ -41,3 +41,6 @@ Report it. Do not look for a way around a bot wall or a captcha.
 
 ## If bsk fails its check
 Use `references/manual-fallback.md` and report the exact failure to BridgePilot.
+
+## Current host and required browser binding
+Use the installed browser-skill instructions for the current agent app; tool names and CLI availability are host capabilities, not guaranteed by this skill. When the client requires an instance, bind every new session explicitly and verify that instance is connected. Before using `bsk-start.sh`, confirm the approved instance ID/unique label is saved in `profile.system.browser_label`; otherwise use the official interface directly with the explicit selector. Never omit the selector or substitute another instance on failure. See `scheduling.md` before unattended checks.

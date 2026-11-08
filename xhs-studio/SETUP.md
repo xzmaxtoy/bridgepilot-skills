@@ -8,23 +8,11 @@ Rules for the whole setup: sign-in, 2FA codes and captchas are always the client
 
 ---
 ## Stage A0. Where everything is stored (ask this first)
-Ask ONE question: **"Where should I keep everything for your Xiaohongshu work (your profile, logs, jobs and footage)? Best: the folder of a ChatGPT project, so the chat and the files live together. Or pick any folder."** Recommended answer first: a ChatGPT project folder (steps below). Any folder the client picks is fine.
-1. Get the folder path from the client (they can drag the folder into the chat). Then: `bash "$SKILL_DIR/scripts/workspace.sh" set "<FOLDER>"`. This creates `<FOLDER>/xhs-studio/` (jobs, log, state, footage-in) and saves the path. Check: `bash "$SKILL_DIR/scripts/workspace.sh" status`.
-2. Do NOT put the workspace on a folder that syncs half-finished files if the client does not want that; tell them everything stays on their computer.
-3. **Guide the client to set up a ChatGPT project (Work mode)**, in their language. Say it in Chinese AND English, and say once that button names can differ by app version; if a step is not there, skip it and pick any folder.
-
-   English:
-   1. In the ChatGPT app, create a new **Project** and choose **Work** mode.
-   2. Under **Source folders**, add the folder that holds your editing material (your raw phone videos and photos).
-   3. Open this chat's menu and **move this conversation into the project**, so the chat and its files stay together.
-   4. Tell me the project folder path (or drag the folder here). I will store everything in a subfolder called `xhs-studio`.
-
-   中文：
-   1. 在 ChatGPT 应用里新建一个**项目**（Project），选择**工作**（Work）模式。
-   2. 在**来源文件夹**（Source folders）里，添加放剪辑素材的文件夹（手机拍的原始视频和照片）。
-   3. 打开这个对话的菜单，把**这个对话移入该项目**，这样对话和文件就放在一起。
-   4. 把项目文件夹的路径告诉我（或把文件夹拖到这里）。我会在里面建一个叫 `xhs-studio` 的子文件夹，存放所有内容。
-4. Done when `workspace.sh status` prints the folder and "folder exists", and the client has seen where it is.
+Ask one compact question: **"Which folder should hold your Xiaohongshu profile, footage, jobs and logs? I recommend one dedicated local folder that your current agent app can access."** Any client-chosen folder is fine; do not require a ChatGPT Project, Work mode or a particular subscription.
+1. Get the folder path, then run `bash "$SKILL_DIR/scripts/workspace.sh" set "<FOLDER>"`. This creates `<FOLDER>/xhs-studio/` and saves its path. Verify `workspace.sh status`.
+2. Identify the current host and verify authorized local file/command access. If it offers projects or attached folders, optionally guide the client using that app's actual available controls. Otherwise use the chosen folder directly. Do not invent Source folders, Work mode or equivalent controls in another app.
+3. Explain where files live and whether the chosen folder syncs elsewhere; do not promise local-only storage for a synced folder. Reuse this workspace when changing agent apps; installation must not overwrite the profile.
+4. Done when the workspace exists, the current agent can access it, and the client knows where it is.
 
 ---
 ## Stage A. Interview
@@ -45,12 +33,12 @@ Goal: required dependencies checked, including the selected music route. Explain
 5. **bsk (BrowserSkill CLI)** and its **Chrome extension** (the browser route is required):
    - Install the CLI. macOS/Linux: `curl -fsSL https://raw.githubusercontent.com/Tencent/BrowserSkill/main/install.sh | sh` then `export PATH="$HOME/.local/bin:$PATH"`. Windows PowerShell: `irm https://raw.githubusercontent.com/Tencent/BrowserSkill/main/install.ps1 | iex`. Check: `bsk --version`.
    - Install the extension in the Chrome that holds the XHS login: https://chromewebstore.google.com/detail/hhcmgoofomhgciiibhipgmgkgnoenaoi (Edge: the Edge Add-ons store). The client clicks "Add to Chrome" themselves. Then open the extension's popup and turn on the local connection.
-   - Install the bsk skill into Codex: `bsk install-skill --harness Codex -y` (the supported path; REQUIRED: `doctor.sh` reports it MISSING until done. Test runs on a machine whose real Codex folder must stay untouched may set `XHS_SKIP_BSK_SKILL=1` for the doctor).
+   - Install/read the official browser-skill in the current host. Inspect `bsk install-skill --help` for supported harnesses; use the actual host option rather than assuming Codex. `bsk install-skill --harness Codex -y` is a Codex example only. For another host, follow its verified skill/tool loading mechanism; report unsupported local execution. Test-only doctor checks may set `XHS_SKIP_BSK_SKILL=1` when installation must stay untouched.
    - Check: `bsk doctor`. Every line must be `ok` (a `FAIL extension connected` line means Chrome is closed or the extension is off).
    - Optional but helpful: in `chrome://extensions` > BrowserSkill > Details, turn on "Allow access to file URLs". It may let `bsk upload` work. If it does not, `references/publish-route.md` has the local-server upload route.
 6. **HyperFrames (video editing).** This skill does not edit video itself: it asks the client for the video requirements and hands the edit to the separately installed **/hyperframes** skill (open source, Apache 2.0, no per-render fee; `LICENSES.md`).
    - Check: `bash "$SKILL_DIR/scripts/check-hyperframes.sh"`. It checks the hyperframes skill, Node 22+ and ffmpeg.
-   - If the skill is MISSING, proceed within existing setup authorization (otherwise ask before installing), then run `npx hyperframes skills update` (installs the core skills: hyperframes, hyperframes-cli, hyperframes-registry, media-use). Alternative: `npx skills add heygen-com/hyperframes --skill hyperframes --skill hyperframes-cli --skill media-use`. The first run downloads from the internet. Then **restart Codex** so it sees the new skill, and run the check again.
+   - If the skill is MISSING, proceed within existing setup authorization (otherwise ask before installing), then run `npx hyperframes skills update` (installs the core skills: hyperframes, hyperframes-cli, hyperframes-registry, media-use). Alternative: `npx skills add heygen-com/hyperframes --skill hyperframes --skill hyperframes-cli --skill media-use`. The first run downloads from the internet. Then **reload or restart the current agent app if required for skill discovery** so it sees the new skill, and run the check again.
    - HyperFrames sends anonymous usage telemetry by default. Tell the client; they can switch it off with the environment variable `HYPERFRAMES_NO_TELEMETRY=1` (or `DO_NOT_TRACK=1`). Record their choice in the log.
    - Read `LICENSES.md` with the client now (short: no fee, no headcount limit) and note it in the log.
 6a. **Music route, before the first music preview.** Offer the free catalog when the client requests BGM, alongside their own licensed track, in-app music, or none. Store `final_cut.music_source` (`catalog`, `provided`, `in_app`, `generate`, or `none`). For `catalog`:
@@ -85,3 +73,6 @@ Goal: prove the whole chain once, ending at "all filled, button untouched".
 8. Set `status.dry_run_complete` true only after the client has seen the filled form and said it looks right.
 
 Setup is done. From now on `SKILL.md` "Step 0" applies.
+
+## Optional: scheduled inbox checks
+Do not create schedules during ordinary setup. If the client requests them, follow `references/scheduling.md`: discover host capabilities, confirm browser/account binding and timezone, use preview-only draft mode by default, and verify one bounded test. No scheduler or plan is mandatory for manual use.

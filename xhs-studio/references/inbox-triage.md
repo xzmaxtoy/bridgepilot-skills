@@ -29,12 +29,12 @@ Order: F = J > B > C = G(question) > D > G(praise) > A/E.
 5. Draft only for new B/C/H threads or previews that turned into intent. Everything else is just logged.
 6. Output one batch card per day (an empty day gets one line "no new messages").
 7. Save the new snapshot as `inbox-state.json` and the old one as `inbox-state-YYYY-MM-DD.json` in `$XHS_HOME/log/`.
-Do not: open threads (that marks them read), reply, like, follow or follow back, mark read. Opening a thread is allowed only when it is on the approved send list.
+Do not: open threads (that marks them read), reply, like, follow or follow back, mark read. Opening a thread is allowed only for an explicitly authorized thread-reading test/review or an approved send list. Explain when relevant that opening may mark it read; never describe that as having no account-side effect. Scheduled preview-only checks must not open unread threads.
 After a post: about 2 h later, one page load of `/notification` > 评论和@, read new comments only, put G-intent comments in the batch card.
 Safety: at most 3 page loads per session, 3 to 6 s between navigations, single tab. Any login wall, captcha or "too frequent" notice: stop and report (`bsk-check-page.sh` exit 3 or 4). One retry for an HTTP 5xx or 524 page, at least 5 s later; then give up for the day. Drop to every other day after 3 empty days.
 
 ## Last bubble check (always)
-A list preview shows the LAST message, which can be OURS. Open the thread (only on the approved send list) and check who sent the last bubble (right/blue = us) before drafting. Never send "sorry for the late reply" when our message is the last one.
+A list preview shows the LAST message, which can be OURS. Open the thread only within the authorized reading/send scope and check who sent the last bubble (right/blue = us) before drafting. Never send "sorry for the late reply" when our message is the last one.
 
 ## Batch card (one line per thread, phone-readable)
 ```
@@ -49,3 +49,6 @@ The client answers with codes ("3-1 4-2"). The log is updated only after the sen
 ## Lead table (B and H only)
 One row per thread: id, nickname only (no avatar, no full message text), first and last message date, source post if known, class, question summary (20 characters at most), our reply date, how the client took it over, outcome (visit booked yes/no/date), note.
 "Traced customer" = a customer who came through XHS AND the client confirms (visit booked, job done). A reply alone does not count. Say what cannot be traced in every report. This feeds the profile's `north_star`.
+
+## Scheduled and simulation modes
+For recurring checks, first read `scheduling.md`; do not assume ChatGPT, Codex, Claude Desktop or another host can schedule local browser work. A simulation authorizes drafts, not typing them into the site or sending. Read previews first; mark uncertain sender/context rather than treating every last-message preview as incoming. Compare with a successful prior scan, keep historical messages separate from new leads, and never issue a duplicate greeting when our own reply is last. Preserve the baseline on partial/failed scans. Manual reads and unsent drafts were tested once; scheduled execution and auto-send remain unverified.

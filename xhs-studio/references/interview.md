@@ -57,7 +57,7 @@ Give this risk note with the group, keeping each choice explicit: "XHS may limit
 A group acceptance applies to its clearly listed recommendations; if creative and automation intent is ambiguous, leave switches OFF and clarify. Record each answer separately in `automation.*`, set `asked_on` to today's date, and set `warning_acknowledged` true only after the client has heard the note. If any switch is on, repeat the kill-switch command to the client: `bash scripts/kill-switch.sh on`.
 
 ### 11. Computer, tools and footage path
-Which computer (Mac or Windows) and which system version? Which ChatGPT / Codex plan? Which browser holds the XHS login (Chrome recommended)? How does footage get from the phone to this computer (cable, AirDrop, a Drive or Dropbox folder)? Which folder should I read it from?
+Which computer (Mac or Windows) and which system version? Which agent app is being used, and does it expose local files, commands and BrowserSkill? Ask about a plan only if a verified required feature depends on it. Which browser holds the XHS login (Chrome recommended)? How does footage get from the phone to this computer (cable, AirDrop, a Drive or Dropbox folder)? Which folder should I read it from?
 -> `system.*`. A phone or tablet alone cannot run the cutdown. If the client has no computer that can run local tools, stop and tell Jesse/BridgePilot.
 
 ### 12. Keywords (optional, can be filled later)

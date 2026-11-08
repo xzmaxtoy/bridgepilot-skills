@@ -60,7 +60,7 @@ if [ -n "$BSK_BIN" ]; then
   echo "$out" | grep -E "^FAIL" | grep -vq "extension connected" && bad=1
   if echo "$out" | grep "agent skill matches" | grep -q "no agent skill installed"; then
     if [ "${XHS_SKIP_BSK_SKILL:-}" = 1 ]; then warn "bsk agent skill" "not installed (skipped: XHS_SKIP_BSK_SKILL=1, test runs only)"
-    else miss "bsk agent skill" "not installed in Codex. Run: bsk install-skill --harness Codex -y   (required, SETUP.md B5; test runs may set XHS_SKIP_BSK_SKILL=1)"; fi
+    else miss "bsk agent skill" "not loaded for this agent. Inspect bsk install-skill --help and install/read browser-skill for the actual host (SETUP.md B5; XHS_SKIP_BSK_SKILL=1 is test-only)"; fi
   else echo "$out" | grep -q "agent skill matches" && ok "bsk agent skill" "installed"; fi
 else
   miss "bsk" "not installed. macOS/Linux: curl -fsSL https://raw.githubusercontent.com/Tencent/BrowserSkill/main/install.sh | sh   Windows: irm https://raw.githubusercontent.com/Tencent/BrowserSkill/main/install.ps1 | iex"

@@ -11,7 +11,7 @@ done
 if [ -n "$found" ]; then echo "OK       hyperframes skill      $found"
 else
   echo "MISSING  hyperframes skill      not installed. Run:  npx hyperframes skills update   (installs the core skills: hyperframes, hyperframes-cli, hyperframes-registry, media-use)"
-  echo "                                or:  npx skills add heygen-com/hyperframes --skill hyperframes --skill hyperframes-cli --skill media-use   (needs Node 22+). Then restart Codex."
+  echo "                                or:  npx skills add heygen-com/hyperframes --skill hyperframes --skill hyperframes-cli --skill media-use   (needs Node 22+). Then reload the current agent app if required."
   bad=1
 fi
 if command -v node >/dev/null 2>&1; then

@@ -2,19 +2,19 @@
 name: xhs-studio
 description: "Create and review Xiaohongshu (RedNote) posts from real business footage, prepare the publish form, and manage approved inbox workflows using the client's Chrome. Use for XHS account setup, post creation, comments, DMs, and insights. Video editing requires the separate HyperFrames skill."
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 # xhs-studio
 
-One client, one Xiaohongshu (XHS) account, one loop: **footage in -> cut -> Chinese text and cover -> caption draft -> client approves -> publish form -> comments and DMs -> numbers -> next post.** It runs inside the client's own Codex on the client's own computer. Real footage only.
+One client, one Xiaohongshu (XHS) account, one loop: **footage in -> cut -> Chinese text and cover -> caption draft -> client approves -> publish form -> comments and DMs -> numbers -> next post.** It runs in the client's chosen agent app with authorized access to their computer and browser; no particular app or subscription is required by the workflow. Check actual host capabilities before claiming compatibility. Real footage only.
 
 `SKILL_DIR` = the folder that holds this SKILL.md. `XHS_HOME` = the client workspace: **a folder the client chose on the first run** (there is no fixed folder). It holds the profile, logs, jobs and footage. The path is saved once by `scripts/workspace.sh set` in `~/.config/xhs-studio/workspace`, and every script reads it from there; you set nothing in later commands. A script that finds no saved path stops with exit 12 and "NO WORKSPACE": run `SETUP.md` stage A0. The profile lives in the workspace, so a skill update never overwrites it. All scripts are called as `bash "$SKILL_DIR/scripts/<name>"` or `python3 "$SKILL_DIR/scripts/<name>"`.
 
 "The owner" in the rules below means the client: the person who owns the XHS account.
 
 ## Step 0, every run
-1. Run `bash "$SKILL_DIR/scripts/workspace.sh" status`. "not set" = stop and run `SETUP.md` stage A0. Then read `$XHS_HOME/profile.json` (get the path with `workspace.sh get`). If the profile is missing, or `status.interview_complete`, `system_prep_complete` or `dry_run_complete` is false: stop and run `SETUP.md` (the guided first run). An explicitly requested read-only analytics test may instead follow `references/insights.md` with automatic actions kept off; it does not complete publishing setup. Otherwise do nothing else first.
+1. Run `bash "$SKILL_DIR/scripts/workspace.sh" status`. "not set" = stop and run `SETUP.md` stage A0. Then read `$XHS_HOME/profile.json` (get the path with `workspace.sh get`). If the profile is missing, or `status.interview_complete`, `system_prep_complete` or `dry_run_complete` is false: stop and run `SETUP.md` (the guided first run). An explicitly requested read-only analytics or inbox simulation may instead follow `references/insights.md` or `references/inbox-triage.md` with automatic actions kept off; it does not complete publishing setup. Otherwise do nothing else first.
 2. Run `bash "$SKILL_DIR/scripts/kill-switch.sh" status`. Report it in one line.
 3. Read the newest files in `$XHS_HOME/log/` (what was done last time, what is waiting).
 4. Run `bash "$SKILL_DIR/scripts/doctor.sh"` once per day, or whenever something fails.
@@ -36,7 +36,7 @@ Present as three separately labelled choices in the first-run interview, each wi
 - A switch only decides **who presses the button**. The client still approves the Chinese text first (see "Chinese copy" below).
 
 ## Chinese copy: always a DRAFT
-Codex drafts the Chinese itself. No outside writing service, no key. Model Chinese reads stiff (生硬). So:
+The current agent drafts the Chinese itself. No outside writing service, no key. Model Chinese reads stiff (生硬). So:
 - Every Chinese output (caption, on-screen text, cover text, reply) is labelled **DRAFT 草稿**.
 - The client rewrites or approves it in their own words before anything is rendered as final, published or sent. `final-check.sh` refuses a final video while `video-brief.json` has `approved: false`.
 - Use the client's sample post and register (`profile.json` > `voice`). Short sentences, spoken style if the profile says spoken. No invented detail: never a number, a date, a name or a quote the client did not give.
@@ -49,6 +49,9 @@ Codex drafts the Chinese itself. No outside writing service, no key. Model Chine
 4. About 2 h after each post: sweep its comments.
 5. Numbers at +24 h and +72 h; weekly, download official analytics first and build a visual report with local/audience targeting analysis (`references/insights.md`).
 6. Write the day's log (`references/log-standard.md`).
+
+## Scheduled inbox checks
+Only when requested: read `references/scheduling.md`, discover the current host's actual scheduler and local-browser access, and create a bounded draft-only test before claiming unattended checks work. Keep the workspace, browser binding, scan baseline and job metadata portable across apps. A schedule never grants sending authority. Remove and verify the matching job when the client discards it.
 
 ## Make a post (the 11 steps)
 1. **Footage in.** The client drops phone video and stills for ONE job in a folder. If it came as a zip, unpack it with `python3 "$SKILL_DIR/scripts/unpack-footage.py" FILE.zip FOLDER` (the system `unzip` can silently skip big clips) and require "all files present and complete". List the files. Confirm in a small intake group, reusing known facts: what was the job, which city (city only), did the customer agree to be shown (`customer_permission`), **which clip shows the FINISHED RESULT** (required for a result-led story; never label preparation footage as an after shot), and which clip, if any, should open the post (hook) and which shows the before state. No yes on permission = do not use that footage. Phone photos: `bash "$SKILL_DIR/scripts/prep-stills.sh" IN OUT` converts HEIC to JPG and makes a contact sheet (`references/footage-cutdown.md`).
@@ -85,14 +88,15 @@ Codex drafts the Chinese itself. No outside writing service, no key. Model Chine
 - XHS forbids contact IDs, links and QR codes in posts, comments and DMs. Use only the plain-text hand-off wording in the profile (`references/conversion-routes.md`).
 - Interaction: prefill from supplied websites/documents with sources, then ask small groups of related questions with recommended answers. Let the client accept a group or edit individual items. A creative-default acceptance never enables automatic actions; each switch needs a clear separate choice. Refine creative preferences through the first storyboard and preview. Save long material to files.
 
-## What is proven, and what is not (status 2026-11-08, v0.4.0)
+## What is proven, and what is not (status 2026-11-08, v0.4.1)
 | Job | Status |
 |---|---|
 | Cutdown script, final-check gate, workspace folder, copy lint, switches, kill switch, action log | Tested offline on synthetic footage |
 | Edit and Chinese text through /hyperframes | One local test completed: approved 60-second edit, Chinese text, free catalog music, and verified final MP4. Recheck other environments and footage. |
 | Fill the creator-center image-note form and publish | Proven once on another account, through a different harness. NOT yet proven on bsk driven from Codex on the client's Chrome |
 | Video upload form on creator center | One Codex/bsk dry run accepted video, custom cover, caption, and five topic chips. Local-file upload fallback was needed; Publish was not clicked. Recheck each account. |
-| Read DM threads, send DM replies, reply to comments | Proven a few times on another account through a different harness. Auto-send is NOT proven |
+| Inbox read and reply simulation | One local manual test read comments and two DMs, checked last-bubble sender and drafted unsent replies. Opening an unread DM marked it read. Automatic sending remains unproven. |
+| Scheduled inbox checks | Temporary one-occurrence job created and deleted in one host; execution not verified. Other agent apps require capability discovery and their own test. |
 | Weekly analytics exports and visual report | One read-only Codex/bsk test: downloaded note-list and seven-day viewing Excel files and built a responsive report. UI/export dates differed; audience geography, captions and hashtags were unavailable. Recheck each account. Bulk comments remain untested. |
 | XHS rules for accounts outside mainland China | Unverified. Treat as unknown; stop on any warning |
 The first dry run in `SETUP.md` is where these get proven for this client. Report what worked and what did not.
@@ -112,6 +116,7 @@ The first dry run in `SETUP.md` is where these get proven for this client. Repor
 | `references/publish-route.md` | Creator-center publish steps and live check |
 | `references/publish-flows.md` | Post types and common faults |
 | `references/inbox-triage.md` | Message classes, daily scan, batch card |
+| `references/scheduling.md` | Host capability checks, portable inbox job, one-shot testing and verified cancellation |
 | `references/send-mechanics.md` | Sending replies, pacing, what blocks a send |
 | `references/insights.md` | Export-first weekly review, local traffic and keyword targeting |
 | `references/weekly-report.md` | Normalized data contract, offline visual report renderer and reusable HTML asset |

@@ -129,10 +129,12 @@ t "lint: bad caption FAILS" 1 python3 "$here/lint-copy.py" "$tmp/bad.md"
 grep -q "R-contact.*FAIL" "$tmp/out.txt" && grep -q "R-credential.*FAIL" "$tmp/out.txt" && grep -q "R-link.*FAIL" "$tmp/out.txt" && grep -q "R-platform.*FAIL" "$tmp/out.txt" && grep -q "R-absolute.*FAIL" "$tmp/out.txt" \
   && { pass=$((pass+1)); echo "PASS  lint: all five red-line checks fire"; } || { fail=$((fail+1)); echo "FAIL  lint: a red-line check did not fire"; }
 
-# install into a temp Codex folder
-t "install to temp dest" 0 bash "$here/install-to-codex.sh" --dest "$tmp/codex-skills"
-t "installed SKILL.md exists" 0 test -f "$tmp/codex-skills/xhs-studio/SKILL.md"
-t "second install refuses without --force" 1 bash "$here/install-to-codex.sh" --dest "$tmp/codex-skills"
+# install into a temporary agent folder
+t "install to temp dest" 0 bash "$here/install-to-codex.sh" --dest "$tmp/agent-skills"
+t "installed SKILL.md exists" 0 test -f "$tmp/agent-skills/xhs-studio/SKILL.md"
+t "installed visual report asset exists" 0 test -f "$tmp/agent-skills/xhs-studio/assets/weekly-report.html"
+t "installed report renderer works" 0 python3 "$tmp/agent-skills/xhs-studio/scripts/test-weekly-report.py"
+t "second install refuses without --force" 1 bash "$here/install-to-codex.sh" --dest "$tmp/agent-skills"
 
 # lint: documented layout (DRAFT line 1, title line 2, FIRST COMMENT section) and 第一步 is not a ranking claim
 cat > "$tmp/doc.md" <<'MD'

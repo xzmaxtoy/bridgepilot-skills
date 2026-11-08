@@ -1,6 +1,6 @@
 # Chinese copy: drafting rules
 
-Codex drafts the Chinese itself, for the client to rewrite. No outside writing service.
+The current agent drafts the Chinese itself, for the client to rewrite. No outside writing service.
 
 ## Always
 - Label every Chinese output **DRAFT 草稿**. Remove the label only after the client says the text is approved.

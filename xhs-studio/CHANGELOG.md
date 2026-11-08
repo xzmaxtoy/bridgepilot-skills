@@ -2,6 +2,12 @@
 
 Semantic versions; the version is in `SKILL.md` frontmatter metadata. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
 
+## 0.4.1 - 2026-11-08
+- Make setup and optional inbox scheduling host-neutral: discover actual local-tool, skill, scheduler and notification capabilities rather than requiring ChatGPT/Codex or a named plan. Keep legacy installer usable with a chosen destination.
+- Add a portable scheduled-check brief, preview-only/draft-only defaults, independent action authorization, persistent baselines, bounded tests and verified cancellation. Scheduled browser execution remains unverified; manual inbox read/draft was tested once.
+- Clarify last-sender checks and read-state side effects. Historical messages and our last replies do not become new leads.
+- Include the visual-report assets in installation so an installed copy can render weekly reports. No profile migration or schedule is created by this update.
+
 ## 0.4.0 - 2026-11-08
 - Weekly reviews download official analytics first, preserve raw exports, and use UI reads for missing context.
 - Add an offline visual report template and validated renderer: daily charts, weekly outcome cards, cumulative post comparisons, local targeting evidence, draft experiment and source links. Test renderer with `python3 scripts/test-weekly-report.py`.
