@@ -30,3 +30,10 @@ Checked with simulated chats only (one AI playing both sides): 7 rounds, 3 diffe
 Re-tested 5 Nov 2026, after publishing, by reading four owner conversations against the skill's own rules. It found real faults: the confirmation step asked two questions while another rule forbids a second question; a bare "ok" and "just tell me what to do" were each read as a yes; one run changed $45 to £45; one carried its own suggested answer forward as the owner's. All four are fixed, and the two scenarios that failed now pass on a re-run.
 
 Not tested: upload into Claude Settings, or any other tool.
+
+## xhs-studio (Codex skill, Xiaohongshu)
+Runs one small business's Xiaohongshu (小红书) account from the owner's own computer: footage in, a short vertical post (the video edit is done by the separate HyperFrames skill), a Chinese caption draft the owner approves, the publish form filled in the owner's own Chrome, then comments, DMs and numbers. Three automation switches (auto-publish, auto-reply to comments, auto-reply to DMs) are all off by default. It stops before the publish button.
+
+Install and first run: see `xhs-studio/README.md`. The first run asks where to keep your files.
+
+Tested: its offline self-test (48 checks). Not tested: a full run inside the ChatGPT app, a real HyperFrames render from the hand-off, and the Xiaohongshu form fill on a live account.

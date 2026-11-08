@@ -1,0 +1,37 @@
+# Changelog
+
+Semantic versions; the version is in `SKILL.md` frontmatter. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
+
+## 0.2.0 - 2026-11-08
+- **Video editing moved to HyperFrames.** Remotion removed (no `remotion-template/`, no `render.sh`, no `setup-remotion.sh`). The skill now asks the client for the video requirements (length, style, music, on-screen text, which clips), writes them to `video-brief.json` (was `props.json`) and hands the edit to the separately installed `/hyperframes` skill. New `final-check.sh` gates the result (approved flag, 1080x1920, length, size). New `check-hyperframes.sh`; `doctor.sh` and setup stage B check the HyperFrames skill, Node 22+ and ffmpeg and print the install command. Licence: Apache 2.0, no per-render fee (see `LICENSES.md`).
+- **No fixed workspace.** The first run (SETUP stage A0) asks where to store everything, saves the path with `scripts/workspace.sh set` (`~/.config/xhs-studio/workspace`) and every script reads it (`_env.sh`). Scripts stop with exit 12 if no folder is chosen. The client is guided, in Chinese and English, to create a ChatGPT project (Work mode), add the editing-material folder under Source folders and move the conversation in.
+- Package carries only the blank `brand/profile.template.json`: no brand, client seed or footage.
+- README tells the client's agent to download from github.com/xzmaxtoy/bridgepilot-skills and install.
+- Node: any version 22 or newer is accepted (the Node 26 rule existed only for Remotion).
+- Kept: three switches OFF by default, Codex-native Chinese copy, bsk browser route, stop before 发布.
+
+## 0.1.2 - 2026-10-16
+- Removed the client seed file and every reference to it. It held a client seed and must not ship to other clients. The first-run interview now asks every answer.
+
+## 0.1.1 - 2026-10-14 (fixes from the first fresh-tester run on real footage)
+- Cutdown: asks for the RESULT clip first (`--result`; optional `--hook`, `--before`, `--avoid`). The hook and the whole ending now come from the result clip, as one continuous stretch; at least one segment from it is guaranteed. Without `--result` it warns loudly. Folders are accepted as input.
+- Cutdown: review step. Writes `plan-review.jpg` (one tile per segment, cropped as rendered) and `plan-review.md`; `--plan-only`; per-segment `pan` and `zoom` to crop a person out; `--avoid` to skip a stretch. No automatic person or object detection exists, and the docs say so (a skin-tone test was tried on real footage and removed: soil and wood trigger it).
+- New privacy gate P1-P5 in the review gate; SKILL.md makes the plan review a mandatory step before the client sees the cut.
+- Stills: `prep-stills.sh` (HEIC to JPG, contact sheet), `--cover-still`, `--still before|after:IMG`.
+- Zips: `unpack-footage.py` extracts file by file and checks every file against the zip listing (the system `unzip` can silently skip big clips on Chinese file names).
+- Render: crf 23 plus `shrink-to-limit.sh` (re-encodes when over `XHS_MAX_MB`, default 95; XHS limit 100). Final render still refuses while `approved` is false (tested).
+- Template: place label and watermark moved inside the safe zone; brand colour and font read from `profile.json` > `brand.style`.
+- Lint: reads the documented caption layout (DRAFT marker line ignored, `FIRST COMMENT:` section); 第一步 / 第一次 no longer flagged as a ranking claim.
+- doctor: Node 26 or any non-LTS Node is MISSING (it breaks Remotion silently); the bsk agent skill is MISSING when absent (as SETUP says), with `XHS_SKIP_BSK_SKILL=1` for test runs.
+- install-to-codex.sh message no longer assumes `~/xhs-studio`; docs say every script reads `XHS_HOME` from the environment.
+- profile template: new optional `brand.style`.
+
+## 0.1.0 - 2026-10-14 (first build)
+- Combined the Xiaohongshu operating manual and the short-video builder into one client-side skill. Brand-specific material removed.
+- New: footage cutdown (`scripts/cutdown.py`): raw phone video to a 10-30 s 9:16 cut with a hook, plus a cover frame.
+- New: slim Remotion project (Post + Cover) with Chinese text inside XHS safe zones and a DRAFT stamp until the client approves.
+- Browser route is bsk on the client's own Chrome, with client-side start/stop/check wrappers.
+- Three automation switches (auto-publish, auto-reply comments, auto-reply DMs), all OFF by default; guard, kill switch, warning stop, action log.
+- Guided first run (interview, system preparation, dry run) and one profile file.
+- No outside writing service: Codex drafts Chinese; everything is DRAFT until the client approves.
+- Tested offline: cutdown on synthetic clips, Remotion Chinese render, copy lint, switches. NOT yet tested: any XHS page, video upload form, auto-send, insights reading.
