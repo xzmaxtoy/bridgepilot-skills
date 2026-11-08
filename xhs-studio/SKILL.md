@@ -2,7 +2,7 @@
 name: xhs-studio
 description: "Create and review Xiaohongshu (RedNote) posts from real business footage, prepare the publish form, and manage approved inbox workflows using the client's Chrome. Use for XHS account setup, post creation, comments, DMs, and insights. Video editing requires the separate HyperFrames skill."
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # xhs-studio
@@ -14,7 +14,7 @@ One client, one Xiaohongshu (XHS) account, one loop: **footage in -> cut -> Chin
 "The owner" in the rules below means the client: the person who owns the XHS account.
 
 ## Step 0, every run
-1. Run `bash "$SKILL_DIR/scripts/workspace.sh" status`. "not set" = stop and run `SETUP.md` stage A0. Then read `$XHS_HOME/profile.json` (get the path with `workspace.sh get`). If the profile is missing, or `status.interview_complete`, `system_prep_complete` or `dry_run_complete` is false: stop and run `SETUP.md` (the guided first run). Do nothing else first.
+1. Run `bash "$SKILL_DIR/scripts/workspace.sh" status`. "not set" = stop and run `SETUP.md` stage A0. Then read `$XHS_HOME/profile.json` (get the path with `workspace.sh get`). If the profile is missing, or `status.interview_complete`, `system_prep_complete` or `dry_run_complete` is false: stop and run `SETUP.md` (the guided first run). An explicitly requested read-only analytics test may instead follow `references/insights.md` with automatic actions kept off; it does not complete publishing setup. Otherwise do nothing else first.
 2. Run `bash "$SKILL_DIR/scripts/kill-switch.sh" status`. Report it in one line.
 3. Read the newest files in `$XHS_HOME/log/` (what was done last time, what is waiting).
 4. Run `bash "$SKILL_DIR/scripts/doctor.sh"` once per day, or whenever something fails.
@@ -47,7 +47,7 @@ Codex drafts the Chinese itself. No outside writing service, no key. Model Chine
 2. Read the inbox, read-only (`references/inbox-triage.md`): at most 3 page loads. Diff against yesterday.
 3. Draft replies in the client's voice. Show one batch to the client. If the matching switch is ON and the reply matches an approved pattern, send it (`references/send-mechanics.md`). Otherwise the client sends.
 4. About 2 h after each post: sweep its comments.
-5. Numbers at +24 h, +72 h and weekly (`references/insights.md`).
+5. Numbers at +24 h and +72 h; weekly, download official analytics first and build a visual report with local/audience targeting analysis (`references/insights.md`).
 6. Write the day's log (`references/log-standard.md`).
 
 ## Make a post (the 11 steps)
@@ -61,7 +61,7 @@ Codex drafts the Chinese itself. No outside writing service, no key. Model Chine
 7. **Review gate** (includes the privacy gate P1-P5: people, house numbers, meters). `python3 "$SKILL_DIR/scripts/lint-copy.py" caption.md --profile "$XHS_HOME/profile.json" --first-comment "<text>"`, then the human checks in `references/review-gate.md`. Any FAIL = fix before the client sees it again.
 8. **Publish.** Fill the creator-center form to "all filled, button untouched" (`references/publish-route.md`). With `auto_publish` OFF the client presses 发布. With it ON and `guard.sh publish` exit 0, the skill presses it once, after the client's approval of this exact post.
 9. **Comments and DMs.** `references/inbox-triage.md`, `references/send-mechanics.md`. Price, booking, complaint, abuse, a request for a contact: escalate to the client, never answer.
-10. **Read-back.** `references/insights.md`. Missing data stays blank, never zero. The profile's `north_star` number is reported next to the reach.
+10. **Read-back.** `references/insights.md`. Download official analytics first for weekly reviews, then build the visual report with source links, daily trends, separate cumulative post data, local traffic and keyword analysis. Missing data stays blank, never zero. Report the correct account's business outcome next to reach; do not transplant another client's `north_star`.
 11. **Next post.** Winners by saves and comments per view, not reach, feed the next brief (`references/topic-ideation.md`).
 
 ## Hard stop rules (publish)
@@ -85,7 +85,7 @@ Codex drafts the Chinese itself. No outside writing service, no key. Model Chine
 - XHS forbids contact IDs, links and QR codes in posts, comments and DMs. Use only the plain-text hand-off wording in the profile (`references/conversion-routes.md`).
 - Interaction: prefill from supplied websites/documents with sources, then ask small groups of related questions with recommended answers. Let the client accept a group or edit individual items. A creative-default acceptance never enables automatic actions; each switch needs a clear separate choice. Refine creative preferences through the first storyboard and preview. Save long material to files.
 
-## What is proven, and what is not (status 2026-11-08, v0.3.0)
+## What is proven, and what is not (status 2026-11-08, v0.4.0)
 | Job | Status |
 |---|---|
 | Cutdown script, final-check gate, workspace folder, copy lint, switches, kill switch, action log | Tested offline on synthetic footage |
@@ -93,7 +93,7 @@ Codex drafts the Chinese itself. No outside writing service, no key. Model Chine
 | Fill the creator-center image-note form and publish | Proven once on another account, through a different harness. NOT yet proven on bsk driven from Codex on the client's Chrome |
 | Video upload form on creator center | One Codex/bsk dry run accepted video, custom cover, caption, and five topic chips. Local-file upload fallback was needed; Publish was not clicked. Recheck each account. |
 | Read DM threads, send DM replies, reply to comments | Proven a few times on another account through a different harness. Auto-send is NOT proven |
-| Read insights and comment lists in bulk | NOT tested |
+| Weekly analytics exports and visual report | One read-only Codex/bsk test: downloaded note-list and seven-day viewing Excel files and built a responsive report. UI/export dates differed; audience geography, captions and hashtags were unavailable. Recheck each account. Bulk comments remain untested. |
 | XHS rules for accounts outside mainland China | Unverified. Treat as unknown; stop on any warning |
 The first dry run in `SETUP.md` is where these get proven for this client. Report what worked and what did not.
 
@@ -113,7 +113,8 @@ The first dry run in `SETUP.md` is where these get proven for this client. Repor
 | `references/publish-flows.md` | Post types and common faults |
 | `references/inbox-triage.md` | Message classes, daily scan, batch card |
 | `references/send-mechanics.md` | Sending replies, pacing, what blocks a send |
-| `references/insights.md` | Numbers per post, weekly roll-up |
+| `references/insights.md` | Export-first weekly review, local traffic and keyword targeting |
+| `references/weekly-report.md` | Normalized data contract, offline visual report renderer and reusable HTML asset |
 | `references/review-gate.md` | Pre-publish checks |
 | `references/conversion-routes.md` | Off-platform hand-off, what may never appear |
 | `references/seo-guide.md`, `topic-ideation.md` | Keywords and topics |

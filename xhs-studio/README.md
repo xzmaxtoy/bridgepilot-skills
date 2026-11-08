@@ -1,4 +1,4 @@
-# xhs-studio (v0.3.0)
+# xhs-studio (v0.4.0)
 
 A Codex skill that runs one small business's Xiaohongshu (RedNote) account from the client's own computer: raw phone footage -> storyline and storyboard -> vertical post (edit and Chinese text by the separate /hyperframes skill) -> caption draft -> publish form -> comments, DMs and numbers. Real footage only. Chinese is always a draft the client approves. Three automation switches (auto-publish, auto-reply comments, auto-reply DMs), all OFF by default. The skill always stops before 发布 until the client approves.
 
@@ -23,3 +23,6 @@ There is no fixed folder. The first run asks the client where to store everythin
 
 ## Self-test (no XHS account touched)
 `bash scripts/self-test.sh` runs the offline checks: copy lint, profile check, switches, kill switch, workspace folder, page classifier, cutdown on synthetic clips, final-check gate.
+
+## Weekly visual review
+Download official Creator Center analytics before collecting missing UI context. Build an offline visual report with daily traffic, scoped per-post comparisons, local audience/keyword evidence, and a draft next experiment. Unknown inquiries and business outcomes stay unknown. See [insights](references/insights.md) and the [report contract](references/weekly-report.md). No account data ships in the template.

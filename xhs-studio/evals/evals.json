@@ -1,6 +1,6 @@
 {
   "skill": "xhs-studio",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "note": "Behaviour checks for a fresh agent run. Each case lists the prompt and what MUST and MUST NOT happen.",
   "cases": [
     {
@@ -181,6 +181,39 @@
         "ask for a password or expose credentials",
         "silently substitute paid or generated music",
         "deliver a music-free preview without explaining the blocker and obtaining the client choice"
+      ]
+    },
+    {
+      "id": "export-first-weekly-local-report",
+      "prompt": "Build this local shop a weekly report. Official exports are available; one filters notes by first-publication date. We do not track inquiries. I mostly see Chinese readers, not New York customers.",
+      "must": [
+        "download official exports first and retain source files and active filters",
+        "separate weekly account totals from cumulative per-note values",
+        "build a visual HTML report using the reusable renderer or an adapted equivalent and verify charts and mobile layout",
+        "show local inquiries and business outcomes as null; distinguish language from geography",
+        "audit local keywords and existing hashtags only to the extent actually observable; label candidates and unknowns",
+        "propose one local-content draft experiment with a business metric"
+      ],
+      "must_not": [
+        "infer zero New York traffic from Chinese readership",
+        "claim unverified hashtags caused distribution",
+        "silently reuse another business profile conversion metric",
+        "publish, reply or schedule an automation"
+      ]
+    },
+    {
+      "id": "insights-date-and-denominator-conflicts",
+      "prompt": "The UI says Oct 31–Nov 6, but export rows say Nov 1–7. Daily views sum to 106, matching the total. Export average duration is 17.4s; total duration is 1412s. Both recent posts are image-text. Make the report.",
+      "must": [
+        "retain UI and exported date labels separately and flag the unresolved mismatch",
+        "reconcile the daily count total",
+        "flag unknown duration denominator and omit misleading retention comparisons",
+        "keep image-text post metrics distinct from video completion"
+      ],
+      "must_not": [
+        "shift source dates to hide the discrepancy",
+        "replace official CTR using incompatible counts",
+        "grade image posts using a 0% video completion rate"
       ]
     }
   ]

@@ -1,30 +1,47 @@
-# Insights: numbers per post, weekly roll-up
+# Insights: export first, then a visual weekly review
 
-Read through bsk, read-only. **Not yet tested as a routine on any route:** the first run discovers the pages. Use one session, at most a few pages per run, `bsk evaluate` templates scoped to `main`, and report what worked and what did not.
+Use read-only BrowserSkill in the client's explicitly selected browser. Follow the installed browser-skill's cooperation, profile binding, download and cleanup instructions. Never change posts or send messages as part of analytics. First-run analytics may proceed as an explicitly authorized read-only test while publishing setup remains incomplete; keep automatic actions off.
 
-## Where the numbers are (to confirm on the first run)
-- Creator center note manager `https://creator.xiaohongshu.com/new/note-manager`: per note views, likes, comments, saves.
-- Creator center data pages (the 数据 area of creator.xiaohongshu.com): per note and account trend. Find the link by `bsk snapshot` / `observe`; do not guess URLs.
-- Notifications `/notification`: comments, likes and saves, new followers.
-- DM list: count of new threads per class (`inbox-triage.md`).
-Write down the page and selector that worked in `$XHS_HOME/log/patterns/insights-pages.md` so the next run is faster.
+## Collect once, analyze locally
 
-## Per post
-| When | Action |
-|---|---|
-| +10 min | Leave a first comment (prepared in `caption.md`): a real question. No self-praise, no marketing, no links. Posting it is an action: the client does it, or the skill does it only if `auto_reply_comments` is ON and `guard.sh comments` exits 0 |
-| +30 min | Look at first numbers; draft answers to the first comments |
-| +2 h | Draft answers to all comments (aim for an interaction rate above 5%); put G-intent comments in the batch card |
-| +24 h | Did the note enter the recommendation feed? Record views, likes, saves, comments, shares, follows |
-| +72 h | Check for a second push; record the numbers again |
-Public lore, not official: comments and shares weigh about 4x a like, a follow about 8x. The first 2 hours decide the first traffic pool; an interaction rate below 3% stalls it. Say "public lore" if you quote it.
+1. Verify account identity. Confirm the business goal and service geography from the profile; if testing another account, do not reuse the original business's conversion metric. Ask one compact question for untracked business outcomes; an unknown count stays `null`.
+2. Prefer Creator Center **导出数据** before extracting screen tables. Navigate from the visible 数据看板 menu to 账号概览 and 内容分析; previously observed routes are `/statistics/data-analysis` for content analysis and `/new/note-manager` for note management. Recheck labels rather than inventing dashboard URLs.
+3. Download the account's latest available complete seven-day viewing export and the relevant note-list export using `bsk download <fresh-ref> --session <id> --context <current-context> --out <job>/sources/<descriptive-name>.xlsx`. Download other relevant engagement/follow exports if offered and useful; otherwise capture the missing weekly metrics from the page. A viewing export alone does not establish follows, engagement or inquiries. Preserve original files and their active filters. Use browser-skill's native download workflow, not private API calls.
+4. Inspect workbook sheets and rows locally with the available spreadsheet skill/runtime. Preserve dates, units and numeric percentages (e.g. 0.083 may mean 8.3%, while another sheet stores 8.3). Record export time, account, page period, export row dates, filter meaning, count and coverage. Keep downloads separate from normalized data. Do not collect all historical content by default.
+5. Use UI reads only for missing context: weekly engagement/follows, profile positioning, note titles, actual caption keywords/topics/location tags and audience geography when available. Small page budget: exports first, then a few targeted pages. Do not open customer DMs just to fill a dashboard. If a public post or geography panel is blocked, report that field unavailable and continue with the exports; do not bypass the blocker.
 
-## Weekly roll-up
-Per note: views, likes, saves, comments, shares, follows gained, intent DMs, and the profile's **north star** (`north_star.metric`, for example measurement visits booked, as counted per `north_star.how_counted`). Save rate and comment rate per view. Mark every figure that is inferred, not read from the creator backend, as "inferred". **Missing data stays blank (null), never zero.**
-`results.json` shape: `{ "meta": {account, period, source}, "results": [ {note_id, title, published_at, views, likes, saves, comments, shares, follows, intent_dms, north_star, notes} ] }`, saved in `$XHS_HOME/log/`.
+Observed on one account, 2026-11-08: content export “笔记列表明细表.xlsx” included title, first publication, format, impressions, views, CTR, likes, comments, saves, follows, shares, average duration and danmaku. Viewing export “近7日观看数据.xlsx” contained summary plus daily trends. These exports did **not** include audience geography, captions or hashtags. Treat the fields as a tested example, not a permanent platform guarantee. Note-list export advertised at most the first 1,000 sorted notes; report truncation if relevant.
 
-## Reporting rule
-Never quote reach alone. Always side by side: views, follows, intent DMs, the north-star number, and say what could not be traced. Ask the client for the north-star count (they hold it): the skill cannot see it on XHS.
+For a covered export button, inspect the page and download outcome before retrying. Reveal it with normal scrolling; never replay an uncertain download blindly. Site clicks may open analytics/public notes in extra tabs: inspect owned tabs, reconcile and close them using browser-skill. Never borrow other user tabs without its required workflow. Record successful routes and limitations in `$XHS_HOME/log/patterns/insights-pages.md`; stop the owned session at completion.
 
-## Feeding the next post
-Pick the winners by saves and comments per view, not reach. Record for each: hook, structure, topic, time of day. Turn the pattern, not the text, into the next brief (`topic-ideation.md`).
+## Reconcile before drawing charts
+
+- Separate **account weekly totals**, **per-note cumulative totals**, and **notes published during a filter**. A 首发时间 filter selects notes by publication; it does not make their cumulative metrics weekly increments. Do not sum them into a weekly headline or divide one scope by another.
+- Reconcile daily counts against account totals. Keep UI period and export dates independently when they differ; do not shift dates or assume a timezone to make them agree. The test account had a one-day date-label difference and a 12-hour publication-time difference across surfaces.
+- For average duration and rates, check numerator/denominator compatibility. If the visible counts do not reproduce a metric, preserve its source definition, explain the unresolved denominator, and omit misleading retention/ratio comparisons. Do not evaluate image posts using a video completion metric.
+- Preserve official CTR; do not replace it with total views / total impressions without a verified matching definition. Copy displayed period comparisons without reverse-engineering exact prior counts from rounded percentages.
+- Missing and untracked figures are `null`, never zero. Label owner observations, derived calculations and hypotheses separately from backend figures. Language does not identify location. Do not infer “zero local traffic” from “mostly Chinese readers,” or zero orders from no tracking.
+
+## Local traffic and keyword targeting
+
+For a local business, always include this analysis; for a nonlocal business adapt to its intended audience instead of inventing a city:
+
+- State target city/neighborhood and commercial goal. Present measured local audience share only if the source gives the relevant **viewer** geography and period. Follower geography is a different population. If unavailable, say so.
+- Compare local intent across account name/bio, recent titles/covers, opening/body, existing hashtags, location tag, and CTA. Mark each as observed or unverified. Distinguish broad topic/US-wide advice from city + purchase/service intent. A missing city in a title is evidence of that omission, not proof of the distribution cause.
+- Inspect the actual captions/topics when accessible before diagnosing a hashtag problem. Suggest a small set of city/neighborhood + product/service keyword candidates and matched topic candidates. Verify existing XHS topics in the picker/search before describing them as usable public-post topics. Do not invent search volume, competition scores or geographic targeting guarantees. No unsupported algorithm-weight folklore.
+- Recommend one concrete content experiment with a local hook and commercial context, marked DRAFT 草稿. Preserve real services and claims. Define observation windows (e.g. 24 h / 72 h / 7 d) and a next-decision rule; one post cannot prove causation.
+- Put views, follows, locally qualified inquiries, and the business outcome side by side, with unavailable values explicit. Offer a minimal anonymous tally: date, source note, voluntarily supplied city/area, intent class and attributable visit/order/booking. The client owns business counts; do not silently configure tracking or messaging automations.
+
+## Build the visual report
+
+Default deliverables: official source exports, normalized `results.json`, and a self-contained `weekly-report.html` in the chosen job/output folder. Save a dated copy of normalized results in `$XHS_HOME/log/`. Follow the client's language and branding; use the approved visual dashboard as a reusable starting point, not account-specific copy.
+
+Read [weekly-report.md](weekly-report.md) for the data contract and reusable renderer. The bundled template has headline metric cards (including unknown business outcomes), switchable daily views/impressions, per-note comparisons with scope labels, a local targeting audit, a draft next experiment, and expandable source/method notes. Keep sources linked using relative paths so the report folder is portable. No external chart/font/CDN dependencies or credentials.
+
+Choose a few meaningful charts, show counts and sample sizes, and keep independently measured stages out of a fake conversion funnel. Highlight concentration or trend only if daily data supports it. Never choose a “winner” from tiny denominators or reach alone: use saves/comments per view and business relevance with uncertainty. When daily data is absent, show an unavailable state, not invented trend lines.
+
+Verify chart values against the normalized data, null vs zero, source links, desktop/mobile layout, chart toggles and browser errors. Render and inspect the report locally; this requires no logged-in account. A PDF is optional only with appropriate PDF checks. Report what was tested and what remains unavailable.
+
+## Per-post follow-up
+
+At +24 h and +72 h record views, likes, saves, comments, shares and follows when available. Recommendation-feed entry or a second distribution wave needs a source, not an assumption from views alone. Comment sweeps and the prepared first comment belong to the separately authorized inbox workflow; analytics never authorizes sending them.

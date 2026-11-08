@@ -2,6 +2,13 @@
 
 Semantic versions; the version is in `SKILL.md` frontmatter metadata. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
 
+## 0.4.0 - 2026-11-08
+- Weekly reviews download official analytics first, preserve raw exports, and use UI reads for missing context.
+- Add an offline visual report template and validated renderer: daily charts, weekly outcome cards, cumulative post comparisons, local targeting evidence, draft experiment and source links. Test renderer with `python3 scripts/test-weekly-report.py`.
+- Audit local geography, title/caption keywords, existing topics, location tags and business outcomes with explicit unknowns. Do not infer location from language or blame hashtags without evidence.
+- Separate publication filters from metric periods; reconcile totals, conflicting dates and rate definitions. Remove unsupported algorithm-weight lore from analytics guidance.
+- Evidence: one read-only account test downloaded two official Excel exports and verified desktop/mobile report interactions. Geography and posted caption/topic access remain unverified. No client data or profile migration.
+
 ## 0.3.0 - 2026-11-08
 - Prefill sourced business facts from client websites/documents; ask small related groups with recommendations, allow optional sample posts to wait, and refine reusable creative preferences through the first video.
 - Follow HyperFrames storyline selection and a concrete storyboard/SPEC before the applicable first-video edit. Keep source footage available; use automatic cutdown only for compatible result-led stories.
