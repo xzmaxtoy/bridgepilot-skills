@@ -1,6 +1,13 @@
 # Changelog
 
-Semantic versions; the version is in `SKILL.md` frontmatter. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
+Semantic versions; the version is in `SKILL.md` frontmatter metadata. To pass an update to a client: give them the new folder, they run `bash scripts/install-to-codex.sh --force`. Their profile, logs and jobs live in the workspace folder (`XHS_HOME`, default `~/xhs-studio`) and are not touched. If `profile.template.json` gains a field, the changelog says so and the skill adds it to their profile at the next run.
+
+## 0.3.0 - 2026-11-08
+- Prefill sourced business facts from client websites/documents; ask small related groups with recommendations, allow optional sample posts to wait, and refine reusable creative preferences through the first video.
+- Follow HyperFrames storyline selection and a concrete storyboard/SPEC before the applicable first-video edit. Keep source footage available; use automatic cutdown only for compatible result-led stories.
+- Honor explicit durations through 60 seconds in profile validation, cutdown targets, briefs, and final QA; retain a shorter recommendation when unspecified.
+- Offer free catalog BGM when music is requested. Check the optional HeyGen helper, guide sign-in, and prove retrieval before recording catalog readiness. Do not silently use paid generation.
+- Template additions: `final_cut.music_source`, `final_cut.preferences_confirmed`, and `system.music_catalog_ready`. Missing fields in existing profiles mean none, provisional, and unverified; ask only when that route is used. No client profile is overwritten.
 
 ## 0.2.0 - 2026-11-08
 - **Video editing moved to HyperFrames.** Remotion removed (no `remotion-template/`, no `render.sh`, no `setup-remotion.sh`). The skill now asks the client for the video requirements (length, style, music, on-screen text, which clips), writes them to `video-brief.json` (was `props.json`) and hands the edit to the separately installed `/hyperframes` skill. New `final-check.sh` gates the result (approved flag, 1080x1920, length, size). New `check-hyperframes.sh`; `doctor.sh` and setup stage B check the HyperFrames skill, Node 22+ and ffmpeg and print the install command. Licence: Apache 2.0, no per-render fee (see `LICENSES.md`).

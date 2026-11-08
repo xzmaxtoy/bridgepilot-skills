@@ -1,7 +1,6 @@
 {
   "_readme": "The ONE profile file (data, not code). The first-run interview fills it; the skill reads it every run. It is saved as profile.json in the client workspace (the storage folder the client chose on the first run, saved by scripts/workspace.sh), NOT inside the skill folder, so skill updates never overwrite it. To add a service or a new client: edit this file only. Every fact carries a source or the word UNVERIFIED. An UNVERIFIED fact may not be used in a post as a claim.",
   "schema_version": 1,
-
   "client": {
     "business_name": "",
     "owner_name": "",
@@ -9,14 +8,24 @@
     "account_type": "UNKNOWN",
     "_account_type_note": "personal | professional | UNKNOWN"
   },
-
   "brand": {
     "services": [
-      {"name": "", "detail": "", "source": "UNVERIFIED"}
+      {
+        "name": "",
+        "detail": "",
+        "source": "UNVERIFIED"
+      }
     ],
-    "service_area": {"value": [], "source": "UNVERIFIED", "_note": "city or region names only; never a street address"},
+    "service_area": {
+      "value": [],
+      "source": "UNVERIFIED",
+      "_note": "city or region names only; never a street address"
+    },
     "differentiators": [
-      {"claim": "", "source": "UNVERIFIED"}
+      {
+        "claim": "",
+        "source": "UNVERIFIED"
+      }
     ],
     "audience": "",
     "style": {
@@ -26,7 +35,6 @@
       "font_family": ""
     }
   },
-
   "voice": {
     "language": "Mandarin",
     "_language_note": "Mandarin | Cantonese-flavoured written Chinese",
@@ -36,54 +44,53 @@
     "tone_notes": "",
     "sample_post": "",
     "sample_post_source": "",
-    "_sample_note": "One finished post the client likes (title + body). All Chinese the skill writes is a DRAFT; the client rewrites it in this voice."
+    "_sample_note": "Optional style example; may be deferred while using the client-approved language and tone. All Chinese remains DRAFT until approved."
   },
-
   "final_cut": {
     "length_sec": 15,
-    "_length_note": "10 to 30",
+    "_length_note": "3 to 60 seconds; recommend 15–20 when unspecified, honor the client’s explicit choice",
     "hook_style": "",
     "on_screen_text": true,
-    "music": "none; the client adds music inside the XHS app",
+    "music": "Offer the free catalog with sign-in if BGM is requested; also allow provided licensed music, in-app music, or none",
     "faces": "not shown",
     "hands": "allowed",
     "watermark": "none",
-    "style_notes": ""
+    "style_notes": "",
+    "music_source": "none",
+    "preferences_confirmed": false,
+    "_note": "Provisional reusable defaults; refine through the first storyline, storyboard and preview. Job requirements override these without changing future defaults."
   },
-
   "red_lines": {
     "licence_claim_allowed": false,
     "_licence_note": "Never say or imply licensed, insured, bonded, or any years-in-business number unless the client states it AND gives the source. Then add it to claims_sourced_by_client.",
     "claims_sourced_by_client": [
-      {"claim": "", "source": ""}
+      {
+        "claim": "",
+        "source": ""
+      }
     ],
     "banned_words": [],
     "never_name": [],
     "other_red_lines": ""
   },
-
   "customer_permission": {
     "ask_per_job": true,
     "_note": "The skill asks the client for a yes before it uses footage of any customer's yard. Faces, house numbers and street signs are never shown."
   },
-
   "contact_handoff": {
     "_note": "XHS forbids contact IDs, phone numbers, links and QR codes in posts, comments and DMs. The skill only writes plain-text hand-off wording that names no ID and no link.",
     "plain_text_wording": [],
     "who_gets_escalations": ""
   },
-
   "dms": {
     "who_answers": "",
     "target_response_hours": 24,
     "backup_person": ""
   },
-
   "north_star": {
     "metric": "",
     "how_counted": ""
   },
-
   "automation": {
     "_note": "THREE separate switches. All false by default. XHS may limit accounts that use automation. When false, the skill prepares the draft and STOPS; the client sends.",
     "auto_publish": false,
@@ -92,22 +99,21 @@
     "warning_acknowledged": false,
     "asked_on": ""
   },
-
   "system": {
     "device_os": "",
     "chatgpt_or_codex_tier": "",
     "browser": "Chrome",
     "browser_label": "",
-    "_browser_label_note": "Only needed if several browsers are connected to bsk. Leave empty otherwise."
+    "_browser_label_note": "Only needed if several browsers are connected to bsk. Leave empty otherwise.",
+    "music_catalog_ready": false,
+    "_music_catalog_note": "Last successful free-catalog retrieval verified during setup; recheck auth before catalog use. No credentials stored here."
   },
-
   "keyword_pool": {
     "core": [],
     "long_tail": [],
     "need": [],
     "season": []
   },
-
   "status": {
     "interview_complete": false,
     "system_prep_complete": false,

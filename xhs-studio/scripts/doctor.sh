@@ -67,9 +67,14 @@ else
 fi
 
 # HyperFrames (video editing; separate skill, installed by the client)
-hf="$("$here/check-hyperframes.sh" 2>&1)" ; hfrc=$?
+hf="$(bash "$here/check-hyperframes.sh" 2>&1)" ; hfrc=$?
 printf "%s\n" "$hf"
 [ "$hfrc" != 0 ] && bad=1
+
+# Music is required only when the client selects the free catalog.
+music="$(bash "$here/check-music.sh" 2>&1)"; musicrc=$?
+printf "%s\n" "$music"
+[ "$musicrc" != 0 ] && bad=1
 
 # Workspace + profile
 if [ -z "${XHS_HOME:-}" ]; then

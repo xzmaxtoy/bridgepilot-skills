@@ -48,6 +48,43 @@ json.dump(p, open(sys.argv[1], "w"), ensure_ascii=False, indent=2)
 PY
 t "complete profile passes" 0 python3 "$here/profile-check.py" "$XHS_HOME/profile.json"
 
+# Explicit lengths and optional style samples must not restart the interview.
+python3 - "$XHS_HOME/profile.json" "$tmp" <<'PY'
+import copy, json, pathlib, sys
+base = json.load(open(sys.argv[1]))
+for label, length in [("short", 3), ("long", 60), ("too-short", 2), ("too-long", 61), ("boolean", True)]:
+    p = copy.deepcopy(base)
+    p["voice"]["sample_post"] = ""
+    p["final_cut"]["length_sec"] = length
+    pathlib.Path(sys.argv[2], label + ".json").write_text(json.dumps(p))
+PY
+t "3-second preference with deferred sample passes" 0 python3 "$here/profile-check.py" "$tmp/short.json"
+t "60-second preference with deferred sample passes" 0 python3 "$here/profile-check.py" "$tmp/long.json"
+for label in too-short too-long boolean; do
+  t "invalid length $label is rejected" 1 python3 "$here/profile-check.py" "$tmp/$label.json"
+done
+
+# Catalog readiness is conditional; these checks must not sign in or fetch music.
+mkdir -p "$tmp/music" "$tmp/mocks"
+cat > "$tmp/mocks/heygen" <<'SH'
+#!/usr/bin/env bash
+[ "$1" = --version ] || exit 99
+echo 'heygen version v0.11.0'
+SH
+cat > "$tmp/mocks/old-heygen" <<'SH'
+#!/usr/bin/env bash
+echo 'heygen version v0.2.0'
+SH
+chmod +x "$tmp/mocks/heygen" "$tmp/mocks/old-heygen"
+echo '{"final_cut":{"music_source":"provided"}}' > "$tmp/music/profile.json"
+t "provided music needs no HeyGen helper" 0 env XHS_HOME="$tmp/music" HEYGEN_BIN="$tmp/missing" bash "$here/check-music.sh"
+echo '{"final_cut":{"music_source":"catalog"},"system":{"music_catalog_ready":false}}' > "$tmp/music/profile.json"
+t "catalog detects missing helper" 1 env XHS_HOME="$tmp/music" HEYGEN_BIN="$tmp/missing" bash "$here/check-music.sh"
+t "catalog rejects old helper" 1 env XHS_HOME="$tmp/music" HEYGEN_BIN="$tmp/mocks/old-heygen" bash "$here/check-music.sh"
+t "installed helper alone is not catalog readiness" 1 env XHS_HOME="$tmp/music" HEYGEN_BIN="$tmp/mocks/heygen" bash "$here/check-music.sh"
+echo '{"final_cut":{"music_source":"catalog"},"system":{"music_catalog_ready":true}}' > "$tmp/music/profile.json"
+t "catalog last verified retrieval passes with helper" 0 env XHS_HOME="$tmp/music" HEYGEN_BIN="$tmp/mocks/heygen" bash "$here/check-music.sh"
+
 # switches: default off
 for s in publish comments dms; do t "guard $s denied by default" 10 bash "$here/guard.sh" $s; done
 python3 - "$XHS_HOME/profile.json" <<'PY'
@@ -153,6 +190,15 @@ sys.exit(0 if a and all(s['file'].endswith('test-landscape.mp4') for s in a) els
   t "review sheet and table written" 0 bash -c "test -s '$tmp/job/plan-review.jpg' && test -s '$tmp/job/plan-review.md'"
   t "rough.mp4 is 1080x1920" 0 bash -c "ffprobe -v error -show_entries stream=width,height -of csv=p=0 '$tmp/job/rough.mp4' | grep -q '1080,1920'"
   t "unknown --result name is refused" 1 python3 "$here/cutdown.py" "$tmp/in" --result nope.mp4 --out "$tmp/job2"
+  t "unsupported duration is rejected rather than clamped" 2 python3 "$here/cutdown.py" "$tmp/in" --result test-landscape.mp4 --target 61 --out "$tmp/job2"
+  mkdir -p "$tmp/long-in"
+  ffmpeg -v error -nostdin -y -f lavfi -i "testsrc2=size=160x90:rate=2:duration=90" -pix_fmt yuv420p "$tmp/long-in/work.mp4" >/dev/null 2>&1
+  cp "$tmp/long-in/work.mp4" "$tmp/long-in/result.mp4"
+  t "60-second rough plan is supported" 0 python3 "$here/cutdown.py" "$tmp/long-in" --result result.mp4 --target 60 --out "$tmp/long-job" --plan-only
+  t "60-second request is retained and plan exceeds old ceiling" 0 python3 -c "
+import json,sys
+p=json.load(open('$tmp/long-job/cut-plan.json'))
+sys.exit(0 if p['target_sec']==60 and p['total_sec']>30 else 1)"
   # --avoid and a still, then hand edit pan/zoom and re-render
   ffmpeg -v error -nostdin -y -f lavfi -i "testsrc=size=1600x1200:rate=1" -frames:v 1 "$tmp/photo.jpg" >/dev/null 2>&1
   t "cutdown with --avoid, --still, --cover-still" 0 python3 "$here/cutdown.py" "$tmp/in" --result test-vertical.mp4 --avoid "test-landscape.mp4@0-6" --still before:"$tmp/photo.jpg" --cover-still "$tmp/photo.jpg" --out "$tmp/job3" --plan-only
@@ -183,11 +229,18 @@ sys.exit(0 if b['approved'] is False and 'requirements' in b and 'on_screen_text
   python3 - "$tmp/job/video-brief.json" <<'PY2'
 import json, sys
 b = json.load(open(sys.argv[1])); b["approved"] = True
+b["requirements"]["length_sec"] = 4
 json.dump(b, open(sys.argv[1], "w"), ensure_ascii=False)
 PY2
   t "approved brief but no final.mp4 is refused" 1 bash "$here/final-check.sh" "$tmp/job"
   ffmpeg -v error -nostdin -y -f lavfi -i "testsrc=size=1080x1920:rate=10:duration=4" -pix_fmt yuv420p "$tmp/job/final.mp4" >/dev/null 2>&1
   t "approved brief + 1080x1920 final.mp4 is accepted" 0 bash "$here/final-check.sh" "$tmp/job"
+  python3 - "$tmp/job/video-brief.json" <<'PY'
+import json, sys
+p = json.load(open(sys.argv[1])); p["requirements"]["length_sec"] = 60
+json.dump(p, open(sys.argv[1], "w"))
+PY
+  t "final check refuses 4-second render for approved 60 seconds" 1 bash "$here/final-check.sh" "$tmp/job"
   ffmpeg -v error -nostdin -y -f lavfi -i "testsrc=size=640x360:rate=10:duration=4" -pix_fmt yuv420p "$tmp/job/final.mp4" >/dev/null 2>&1
   t "wrong frame size is refused" 1 bash "$here/final-check.sh" "$tmp/job"
 fi

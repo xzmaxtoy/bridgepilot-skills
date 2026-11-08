@@ -23,6 +23,17 @@ h="$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=
 d="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$job/final.mp4")"
 echo "final.mp4: ${w}x${h}, ${d}s"
 [ "$w" = 1080 ] && [ "$h" = 1920 ] || { echo "FAIL: must be 1080x1920 (9:16). Ask /hyperframes to render at 1080x1920."; exit 1; }
-python3 -c "import sys;d=float(sys.argv[1]);sys.exit(0 if 3<=d<=60 else 1)" "$d" || { echo "FAIL: length must be 3-60 s (target 10-30 s)"; exit 1; }
+python3 - "$d" "$job/video-brief.json" <<'PY' || exit 1
+import json, sys
+duration = float(sys.argv[1])
+if not 3 <= duration <= 60:
+    sys.exit("FAIL: length must be 3-60 s")
+requested = (json.load(open(sys.argv[2])).get("requirements") or {}).get("length_sec")
+if requested is not None:
+    if isinstance(requested, bool) or not isinstance(requested, (int, float)) or not 3 <= requested <= 60:
+        sys.exit("FAIL: brief length_sec must be a number from 3 to 60")
+    if abs(duration - requested) > 0.1:
+        sys.exit("FAIL: rendered %.3f s does not match approved %.3f s" % (duration, requested))
+PY
 bash "$here/shrink-to-limit.sh" "$job/final.mp4"
 echo "final OK: $job/final.mp4"

@@ -1,32 +1,33 @@
 # First-run interview
 
-Goal: fill `$XHS_HOME/profile.json` (start from `brand/profile.template.json`; ask every answer in the interview, assume none). No separate question list is ever sent to the client: you ask them here.
+Goal: prepare a usable profile quickly, then refine creative preferences during the first video. Start from the blank template only when no saved profile exists.
 
 ## How to run it
-- One question at a time. Say the recommended answer first when there is one. Wait for the answer.
-- Chat language: the client's (English or Chinese). Keep questions short and plain.
-- After each section, write the answers into `profile.json` right away (so a stop in the middle loses nothing). Show the client the section in plain words and ask "right?".
-- Every fact gets a `source`: "client, interview YYYY-MM-DD" when the client states it now, a document name if they show one, or the word **UNVERIFIED** when they are unsure or it came from a seed. An UNVERIFIED fact may never be used as a claim in a post.
-- Never ask for a password, a 2FA code, a card number or a customer's private details.
-- Do not paste the whole list at the client. Do not skip a section because the answer seems obvious.
+- Read client-supplied websites and business documents before asking for facts. Prefill business name, services, areas, audience and voice cues with their source; label inferences and missing facts. Present one short profile summary for confirmation. Do not re-ask confirmed facts.
+- Treat the sections below as a coverage checklist, not a fixed question-by-question script. Ask roughly 3–5 related, unresolved questions per group, with recommended answers; the client may accept the group or change selected items. Use one question when it genuinely needs separate attention or the client prefers it.
+- A useful first group is audience, language/tone, inquiry handoff, and success metric. Keep the three automation choices separately labelled with OFF recommendations and the risk note; accepting a creative group cannot enable them.
+- Save answers after each group. Every business claim needs a source: client/date, a supplied document/URL, or UNVERIFIED. A recommendation becomes a confirmed fact only after the client accepts it. UNVERIFIED claims stay out of posts.
+- A sample post and keywords are optional. Defer account details that are not needed yet; verify the actual account before opening its publish form. Do not invent placeholders to pass validation.
+- Creative settings are provisional starting points. Inspect the first footage, then develop the opening, length, pace, captions, music and brand tag through the selected storyline, storyboard and preview. Save reusable choices under `final_cut`; record one-video exceptions under the job's `video-brief.json` > `requirements`.
+- Use the client's language. Never ask for passwords, codes, payment details, or customer private details. A test profile is not authorization to send, publish, or schedule.
 
-## Sections (in this order)
+## Coverage checklist
 
 ### 1. The XHS account
 Does the account exist today? Handle (the name, not a login). Personal or professional (专业号)? About how many followers? Who runs it now? Is the client signed in to the XHS creator center in the Chrome they use on this computer?
--> `client.xhs_handle`, `client.account_type`. If there is no account yet: stop here; the client creates it first (sign-up, phone checks and captchas are always theirs).
+-> `client.xhs_handle`, `client.account_type`. If there is no account yet, the client creates it before any account-access step; local profile and video planning can continue. Sign-up, phone checks and captchas are theirs.
 
 ### 2. Brand material
 Business name as customers know it. What services do you sell today (one line each)? Which cities or areas do you serve (city names only)? What makes you different, in your own words (1-3 things, each one true and provable)? Who is the customer?
 -> `client.business_name`, `brand.services[]`, `brand.service_area`, `brand.differentiators[]`, `brand.audience`. Services are a list so a new service later = one more row in this file.
 
 ### 3. Voice
-Mandarin or Cantonese-flavoured written Chinese for posts and replies? (XHS is read in Simplified Chinese.) Spoken, like talking to a neighbour, or written and tidy? Please paste ONE finished post you like (yours or another account's) and say why you like it.
+Mandarin or Cantonese-flavoured written Chinese for posts and replies? (XHS is read in Simplified Chinese.) Spoken, like talking to a neighbour, or written and tidy? Optionally share a finished post you like and why; allow “later.”
 -> `voice.*`. The sample post is the style target. Say plainly: "My Chinese will be a draft. You rewrite it; I learn from your edits."
 
 ### 4. Final cut and style
-How long should a video be (10 to 30 seconds; recommend 15)? What should the first 2 seconds show? On-screen Chinese text: yes or no? Music: none (recommended; you add trending music inside the XHS app)? Faces in the frame: yes, no, or hands only? Do you want a watermark or brand tag? Any style you like (calm, fast, before/after, close-up)?
--> `final_cut.*`.
+Offer a small group of starting recommendations based on the footage: length (usually 15–20 seconds, with explicit requests supported from 3–60 seconds), opening, short Chinese captions, pace and brand tag. If music is requested, recommend the free catalog with sign-in, while offering a provided licensed track, in-app music, or none. Set `music_source`; complete catalog setup before delivering a preview with requested BGM.
+-> `final_cut.*`. Keep `preferences_confirmed` false until the client accepts reusable settings. Do not require every creative answer before the first storyboard. A 60-second request is not a new default for other clients.
 
 ### 5. Red lines and banned claims
 Ask: "Is there anything we must never say?" Then state the standing rule: the skill never says or implies licensed, insured, bonded, or a number of years in business, unless you tell me it is true AND where I can see proof. Ask whether the client wants to state any such claim now (if yes: the claim and its source go to `red_lines.claims_sourced_by_client`, and only then `licence_claim_allowed` may be true). Also: words to avoid, names never to mention (competitors, suppliers, partners).
@@ -48,12 +49,12 @@ Who answers DMs today? How fast do you want a first answer (hours)? Is there a b
 Ask: "If this account works, which one number goes up?" Recommend a business action over reach, for example measurement visits booked. How would we count it (who tells me, how often)?
 -> `north_star.metric`, `north_star.how_counted`.
 
-### 10. The three switches (ask ONE BY ONE, default OFF)
-For each, say this in plain words first: "XHS may limit accounts that use automation. If it does, the skill stops and tells you. You can turn this off any time with the kill switch." Then ask:
+### 10. The three switches (separate choices, default OFF)
+Give this risk note with the group, keeping each choice explicit: "XHS may limit accounts that use automation. If it does, the skill stops and tells you. You can turn this off any time with the kill switch." Then ask:
 - (a) Auto-publish: after you approve the exact post, should I press 发布 myself? Default: no, I fill the form and you press it. (Auto-publish was proven on one other account.)
 - (b) Auto-reply to comments: should I send replies that match wording you approved? Default: no, I draft, you send. (Not yet proven.)
 - (c) Auto-reply to DMs: same. Default: no. (Not yet proven.)
-Record each answer separately in `automation.*`, set `asked_on` to today's date, and set `warning_acknowledged` true only after the client has heard the note. If any switch is on, repeat the kill-switch command to the client: `bash scripts/kill-switch.sh on`.
+A group acceptance applies to its clearly listed recommendations; if creative and automation intent is ambiguous, leave switches OFF and clarify. Record each answer separately in `automation.*`, set `asked_on` to today's date, and set `warning_acknowledged` true only after the client has heard the note. If any switch is on, repeat the kill-switch command to the client: `bash scripts/kill-switch.sh on`.
 
 ### 11. Computer, tools and footage path
 Which computer (Mac or Windows) and which system version? Which ChatGPT / Codex plan? Which browser holds the XHS login (Chrome recommended)? How does footage get from the phone to this computer (cable, AirDrop, a Drive or Dropbox folder)? Which folder should I read it from?
@@ -63,7 +64,6 @@ Which computer (Mac or Windows) and which system version? Which ChatGPT / Codex 
 What would a homeowner type into XHS search to find your service? Fill `keyword_pool` from the answers and from `references/seo-guide.md`.
 
 ## Finish
-1. Run `python3 scripts/profile-check.py $XHS_HOME/profile.json`. Fix every listed problem.
-2. Set `status.interview_complete` true.
-3. Read the whole profile back to the client in plain words (not JSON). Ask for one yes.
-4. Go on to SYSTEM PREPARATION in `SETUP.md`.
+1. Read back the confirmed business essentials, provisional creative defaults, deferred fields, and separate automation choices in one compact summary. Get the client's confirmation.
+2. Set `status.interview_complete: true` and run `python3 scripts/profile-check.py <profile>`. Fix real validation problems; do not fabricate optional values. If validation fails, restore `interview_complete: false` until corrected.
+3. Continue system preparation and the first video. Update the profile as the client reviews the storyboard and preview instead of restarting the interview.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""xhs-studio cutdown: raw phone footage -> 10-30 s 9:16 rough cut.
+"""xhs-studio cutdown: raw phone footage -> requested-length 9:16 rough cut (3-60 s).
 
 Needs only python3 (stdlib) + ffmpeg + ffprobe. No network. No AI model.
 
@@ -181,7 +181,7 @@ def build_plan(clips, args, result_paths, hook_paths, before_paths):
     def overlaps(w, ws):
         return any(x["file"] == w["file"] and x["start"] < w["start"] + w["src_dur"] and w["start"] < x["start"] + x["src_dur"] for x in ws)
 
-    target = max(10.0, min(30.0, args.target))
+    target = args.target
     hook = args.hook_sec
     body = target - hook
     n_before = max(1, round(body * 0.30 / L))
@@ -297,7 +297,7 @@ def build_plan(clips, args, result_paths, hook_paths, before_paths):
     for role, f in stills:
         if role == "after":
             add({"role": "after", "file": f}, still=True)
-    while t > 30.0 and len(segs) > 3:
+    while t > target and len(segs) > 3:
         drop = next((i for i in range(len(segs) - 1, -1, -1) if segs[i]["role"] == "during"), None)
         if drop is None:
             break
@@ -307,10 +307,10 @@ def build_plan(clips, args, result_paths, hook_paths, before_paths):
     for s in segs:  # renumber the timeline
         s["out_start"] = round(t, 2)
         t += s["out_dur"]
-    if t < 10:
-        warnings.append("cut is %.1f s, under the 10 s floor: add footage or raise --target" % t)
-    if t > 30:
-        warnings.append("cut is %.1f s, over the 30 s ceiling: lower --target" % t)
+    if t < target - 0.1:
+        warnings.append("cut is %.1f s, below the requested %.1f s: review usable footage; do not pad it" % (t, target))
+    if t > target + 0.1:
+        warnings.append("cut is %.1f s, above the requested %.1f s: trim the plan or edit original clips" % (t, target))
     warnings.append("PRIVACY CHECK REQUIRED: the script cannot see people, faces, house numbers, plates or utility meters. "
                     "Open plan-review.jpg and look at every tile (also the edges); drop, pan or zoom as needed.")
     return {"version": 2, "target_sec": target, "total_sec": round(t, 2), "fit": args.fit, "audio": args.audio,
@@ -428,9 +428,10 @@ def render_plan(plan, outdir, cover_still=None):
             "cover_raw": "cover-raw.png",
             "frame": {"width": 1080, "height": 1920, "safe_zone": "x 60-940, y 130-1440 (top 130, bottom 480, right 140 are covered by the XHS interface)"},
             "requirements": {
-                "length_sec": None,
+                "length_sec": plan["target_sec"],
                 "style": "",
-                "music": "none",
+                "music": "pending client choice",
+                "music_source": "none",
                 "clips_to_use": [],
                 "clips_to_avoid": [],
             },
@@ -459,7 +460,7 @@ def main():
     ap.add_argument("--avoid", action="append", default=[], help='skip a stretch, e.g. "IMG_2597.MOV@10-16" (seconds)')
     ap.add_argument("--still", action="append", default=[], help="ROLE:IMAGE (before|after), a real photo already converted to jpg/png")
     ap.add_argument("--cover-still", help="use this photo (jpg/png) as the cover background")
-    ap.add_argument("--target", type=float, default=20.0, help="target length in seconds (10-30)")
+    ap.add_argument("--target", type=float, default=20.0, help="target length in seconds (3-60; approximate rough plan)")
     ap.add_argument("--fit", choices=["crop", "blur"], default="crop",
                     help="crop = fill 9:16 (landscape clips lose their sides); blur = whole frame on blurred background")
     ap.add_argument("--audio", choices=["mute", "keep"], default="mute")
@@ -470,6 +471,8 @@ def main():
     ap.add_argument("--render-plan", help="re-render from an edited cut-plan.json")
     ap.add_argument("--list", help="print the review table of a cut-plan.json")
     args = ap.parse_args()
+    if not 3 <= args.target <= 60:
+        ap.error("--target must be 3 to 60 seconds; it is never silently clamped")
 
     if args.list:
         plan = json.load(open(args.list))

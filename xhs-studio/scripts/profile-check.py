@@ -27,9 +27,14 @@ def main():
         if k not in p:
             problems.append("missing section: %s" % k)
     a = p.get("automation", {})
+    music_source = p.get("final_cut", {}).get("music_source", "none")
+    if music_source not in ("none", "catalog", "provided", "in_app", "generate"):
+        problems.append("final_cut.music_source must be none, catalog, provided, in_app, or generate")
+    if not isinstance(p.get("system", {}).get("music_catalog_ready", False), bool):
+        problems.append("system.music_catalog_ready must be true or false")
     for s in SWITCHES:
         if not isinstance(a.get(s), bool):
-            problems.append("automation.%s must be true or false (asked one by one in the interview)" % s)
+            problems.append("automation.%s must be true or false (separately confirmed automation choices)" % s)
     import re as _re
     style = (p.get("brand") or {}).get("style") or {}
     for k in ("accent_colour", "text_colour"):
@@ -66,12 +71,10 @@ def main():
         v = p.get("voice", {})
         if not v.get("language") or not v.get("register"):
             problems.append("voice.language / voice.register missing")
-        if not v.get("sample_post"):
-            problems.append("voice.sample_post is empty (ask for one finished post)")
         fc = p.get("final_cut", {})
         ls = fc.get("length_sec")
-        if not isinstance(ls, (int, float)) or not 10 <= ls <= 30:
-            problems.append("final_cut.length_sec must be 10 to 30")
+        if isinstance(ls, bool) or not isinstance(ls, (int, float)) or not 3 <= ls <= 60:
+            problems.append("final_cut.length_sec must be 3 to 60")
         if not p.get("north_star", {}).get("metric"):
             problems.append("north_star.metric is empty")
         if not p.get("dms", {}).get("who_answers"):

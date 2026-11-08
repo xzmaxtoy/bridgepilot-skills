@@ -1,4 +1,4 @@
-# Footage cutdown: raw phone video to a 10-30 s 9:16 post
+# Footage planning and cutdown for a vertical post
 
 New build; nothing like it existed in the source skills. Real footage only. The point: the client films a whole job (maybe an hour), and gets back a short vertical cut with a hook, Chinese text and a cover, in minutes instead of hours.
 
@@ -10,7 +10,15 @@ New build; nothing like it existed in the source skills. Real footage only. The 
 - A zip (Google Drive or a phone-folder download): `python3 "$SKILL_DIR/scripts/unpack-footage.py" FOOTAGE.zip FOLDER`. The system `unzip` can abort on a Chinese file name ("write error (disk full?)" while the disk is fine) and then silently skip every file after it, often the two biggest clips. The script extracts file by file, continues after an error, and compares every file with the zip listing. It must end with "all files present and complete". If it lists problems, do not use the folder: download the zip again.
 - Phone photos: `bash "$SKILL_DIR/scripts/prep-stills.sh" INPUT_FOLDER OUTPUT_FOLDER` converts HEIC to JPG (macOS `sips`, else `heif-convert`, else ImageMagick) and writes `stills-sheet.jpg` (6 per row, sorted file names). Pick: a cover background (`--cover-still IMG.jpg`) or before/after frames shown for 2 s each (`--still before:IMG.jpg`, `--still after:IMG.jpg`). Real photos of the job only. Same privacy check as video.
 
-## Ask the client first
+## Storyline and storyboard before editing
+
+Inspect the actual footage before suggesting a narrative. For a new narrative video over roughly 15 seconds, follow the installed HyperFrames vertical/social, story, and specification guidance: propose three distinct storylines in words, put the recommendation first, let the client choose, then save `STORYLINES.md`, `SPEC.md`, and a storyboard before cutting. Honor explicit user scripts/storyboards and HyperFrames' no-stops/file-delivery exceptions.
+
+The storyboard maps output times or frame ranges to source clips and intervals, framing, draft copy, and sound cues. It must show what the footage can actually support. Missing after footage means requesting it or agreeing a different story, not creating or relabelling a finished yard. Planning choices do not approve final copy, a final render, or publication.
+
+The automatic cutdown below is optional and specifically result-led. Use it only after choosing a compatible story; use original sources in HyperFrames for other structures. A `--plan-only` pass may help inspect candidate intervals, but is not a replacement for storyline selection or a storyboard.
+
+## Confirm unresolved footage facts in a small group
 1. Which clip shows the **finished result**? (`--result`, required. Without it the script assumes the last clip and warns loudly.)
 2. Is there a clip to open the post with? (`--hook`, optional. Default: the best moment of the result clip.)
 3. Which clip shows how it looked before? (`--before`, optional.)
@@ -50,7 +58,7 @@ There is **no automatic person, face or object detection** in this package. A sk
 If you cannot view images, the client reviews the sheet themselves before approving. Do not claim the check was done.
 
 ## Length and pace
-10-30 s. Recommend 15-20 s (profile `final_cut.length_sec`). A new idea or angle every 2-3 s. Never hold one shot longer than 4 s unless it is the result.
+Recommend 15–20 seconds when the client has no preference; support explicit requests from 3–60 seconds. Pass the requested length to the brief and `--target` without silently clamping it. The automatic rough plan is approximate: report insufficient usable footage rather than padding or claiming it met the requested duration. Let the selected story and camera motion determine cuts and holds.
 
 ## Hook (first 2 seconds)
 - The first frame must already be interesting: the finished result, a before/after contrast, or a close-up of the work. Never a logo, a title card, or a wide empty yard.
@@ -58,11 +66,11 @@ If you cannot view images, the client reviews the sheet themselves before approv
 - No claim in the hook that the profile cannot source (no "最好", "第一", licence, price).
 
 ## Video requirements and the hand-off to /hyperframes
-Ask the client first (one question at a time, recommended answer first; defaults from `profile.json` > `final_cut`): length (10-30 s, recommend 15), style (calm, fast, before/after, close-up), music (none by default; a file the client owns), on-screen Chinese text (yes/no), which clips to use and avoid. Write them into `video-brief.json`.
+Use provisional defaults and ask a small group of unresolved choices with recommendations: length, opening, pace, captions, brand tag, and music route. Refine them through the first storyboard and preview rather than completing a long creative interview first. Store this job's explicit requirements in `video-brief.json`; update profile defaults only when the client confirms they should apply to future videos. If BGM is wanted, offer the free catalog and finish `SETUP.md` B6a before the requested music preview. A track the client provides, in-app music, and none remain valid choices. Generated music uses a separate chosen route, not an automatic fallback.
 
 Then hand the edit to **/hyperframes** (it must be installed: `check-hyperframes.sh`; if not, show the client the install command and stop). Give it:
-- the brief file path and the job folder; the source `rough.mp4` (or the original clips if the client wants a new cut);
-- frame 1080x1920, 9:16, h264, 10-30 s; output `<job>/final.mp4` and a still `<job>/cover.png`;
+- the brief file path and the job folder; the original source clips and selected `STORYLINES.md`, `SPEC.md`, storyboard, and optional `rough.mp4`;
+- frame 1080x1920, 9:16, h264, the client-requested duration (3–60 s); output `<job>/final.mp4` and a still `<job>/cover.png`;
 - safe zones: x 60-940, y 130-1440 (top 130 px, bottom 480 px and right 140 px are covered by the XHS interface). Hook in the upper safe zone, captions just above the bottom 480 px band, optional place label top-left inside the zone. Never over a face. Max 2 lines, 14 characters per line, font size 64 px or more;
 - a Chinese-capable font (the profile's `brand.style.font_family` if set; else Noto Sans SC or PingFang SC), brand colours from `brand.style`;
 - "put a red DRAFT stamp on every preview; none on the final";
@@ -70,10 +78,10 @@ Then hand the edit to **/hyperframes** (it must be installed: `check-hyperframes
 The client can open the HyperFrames project and change the video themselves. After the client's rewrite and yes: set `approved: true`, render the final, then `bash "$SKILL_DIR/scripts/final-check.sh" JOB`.
 
 ## Cover frame
-`cover-raw.png` is the middle of the hook (or the photo you gave with `--cover-still`). The cover must show the result or the contrast, big text on the lower third, no face covered. XHS shows covers in a grid: one idea, 4-12 characters. If the frame is poor, pick another second: `ffmpeg -ss <t> -i clip -frames:v 1 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" cover-raw.png`.
+`cover-raw.png` is the middle of the hook (or the photo you gave with `--cover-still`). The cover must reflect the selected story (a result/contrast only when supported), big text on the lower third, no face covered. XHS shows covers in a grid: one idea, 4-12 characters. If the frame is poor, pick another second: `ffmpeg -ss <t> -i clip -frames:v 1 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" cover-raw.png`.
 
 ## QA before showing the client
-1. `ffprobe final.mp4`: 1080x1920, h264, 10-30 s.
+1. `ffprobe final.mp4`: 1080x1920, h264, the approved duration (3–60 s).
 2. Look at 3 frames (start, middle, end) and the cover. Chinese characters are real characters (no empty boxes), nothing outside the safe zones, no text over a face, no other platform's mark, nothing AI-generated.
 3. Size under 100 MB (XHS limit as noted in the source skill). `final-check.sh` runs `shrink-to-limit.sh`, which re-encodes at a computed bitrate when the file is over `XHS_MAX_MB` (default 95).
 4. Footage permission recorded for this job.

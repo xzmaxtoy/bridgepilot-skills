@@ -1,6 +1,6 @@
 # Dependencies
 
-`bash scripts/doctor.sh` checks all of these and prints a fix for each. Guided install: `SETUP.md` stage B. Updated for v0.2.0 (2026-11-08). macOS (Apple silicon).
+`bash scripts/doctor.sh` checks all of these and prints a fix for each. Guided install: `SETUP.md` stage B. Updated for v0.3.0 (2026-11-08). macOS (Apple silicon).
 
 | # | Dependency | Why | Check | Install |
 |---|---|---|---|---|
@@ -18,10 +18,12 @@
 | 12 | xhs-studio in Codex's skills folder | This skill | `ls ~/.agents/skills/xhs-studio/SKILL.md` | `bash scripts/install-to-codex.sh` (default `~/.agents/skills`; use `--dest ~/.codex/skills` on older Codex) |
 | 13 | The client's XHS creator-center sign-in | Publish, inbox, insights | `bsk-check-page.sh` exit 0 on creator.xiaohongshu.com | the client signs in (credentials, 2FA and captchas are theirs) |
 
+| 14 | HeyGen helper (only for catalog music) | Retrieves free catalog tracks via HyperFrames/media-use | `bash scripts/check-music.sh`; `heygen --version` | Follow https://developers.heygen.com/cli; respect existing install authorization. Then `npx hyperframes auth status`, client-completed `npx hyperframes auth login` if needed, recheck and prove track retrieval. |
+
 Helper scripts that need no extra install: `unpack-footage.py` (Python only), `prep-stills.sh` (macOS `sips`; elsewhere `heif-convert` from libheif, or ImageMagick `magick`), `shrink-to-limit.sh` (ffmpeg).
 
 Disk: HyperFrames downloads its own render browser on first use (a few hundred MB), plus space for footage and renders. Network: needed only for installs and for XHS itself.
 
 Windows note: the helper scripts are bash. Use Git Bash or WSL. Not tested on Windows; the ffmpeg, Node and bsk parts have Windows installers, the bash wrappers are unverified there.
 
-No keys, accounts or paid services are needed beyond the client's own ChatGPT/Codex plan. Licence notes: `LICENSES.md`.
+Local editing needs no additional service account. The optional free music catalog needs the HeyGen helper and HyperFrames sign-in; generated music is a separate credits-based choice. Licence notes: `LICENSES.md`.
